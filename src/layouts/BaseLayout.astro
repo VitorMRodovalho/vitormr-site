@@ -1,0 +1,96 @@
+---
+/**
+ * BaseLayout — site-wide HTML wrapper with metadata + Schema.org Person.
+ *
+ * Person markup includes occupation, affiliation (Linesight), founder role
+ * at Núcleo IA & GP, and `sameAs` cross-links to LinkedIn + GitHub for
+ * Knowledge Graph entity-resolution.
+ */
+
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: "Vitor Maia Rodovalho",
+        alternateName: ["Vitor M. Rodovalho", "Vitor Rodovalho"],
+        url: "https://vitormr.dev",
+        sameAs: [
+          "https://www.linkedin.com/in/vitor-rodovalho-pmp",
+          "https://github.com/VitorMRodovalho",
+        ],
+        jobTitle: "Senior Cost Manager",
+        worksFor: {
+          "@type": "Organization",
+          name: "Linesight",
+          url: "https://www.linesight.com",
+        },
+        affiliation: [
+          {
+            "@type": "Organization",
+            name: "Project Management Institute (PMI)",
+            url: "https://www.pmi.org",
+          },
+          {
+            "@type": "Organization",
+            name: "Construction Management Association of America (CMAA)",
+            url: "https://www.cmaanet.org",
+          },
+        ],
+        knowsAbout: [
+          "Data Center Construction",
+          "Cost Management",
+          "Project Controls",
+          "Power BI",
+          "Databricks",
+          "Primavera P6",
+          "PMIS Integration",
+          "AI in Project Management",
+          "Capital Program Delivery",
+          "Construction Economics",
+        ],
+        hasCredential: [
+          { "@type": "EducationalOccupationalCredential", name: "Project Management Professional (PMP)" },
+          { "@type": "EducationalOccupationalCredential", name: "Licensed Civil Engineer (Brazil, CONFEA)" },
+        ],
+      })}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <slot />
+  </body>
+</html>

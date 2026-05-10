@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * Homepage — Hero placeholder.
+ *
+ * Real content (5-phase career arc + featured projects + AI/research
+ * positioning) drops in PR-V02. This file ships the structure so the
+ * Cloudflare Pages binding (apex `vitormr.dev` Custom Domain) can be
+ * verified non-empty.
+ */
+
+const title = "Vitor M. Rodovalho";
+const description =
+  "Senior Cost Manager at Linesight · Data Center & Capital Programs · Founder, AI & PM Research Hub (PMI Brazil) · PMP® · 15+ years across U.S. and Brazil.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 flex items-center justify-center px-4 py-16 md:py-24">
+    <div class="max-w-2xl space-y-6 text-center">
+      <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        Senior Cost Manager · Researcher · Builder
+      </p>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+        Vitor M. Rodovalho
+      </h1>
+      <p class="text-base sm:text-lg text-muted-foreground leading-relaxed">
+        Hyperscale data-center cost management at Linesight. Open-source builder.
+        Founder of the AI & PM Research Hub at PMI Brazil. 15+ years across
+        U.S. and Brazil.
+      </p>
+      <p class="text-xs text-muted-foreground/60 pt-8">
+        Site under construction · sections coming in PR-V02 (Hero + About) and
+        PR-V04 (Projects hub).
+      </p>
+    </div>
+  </main>
+  <footer class="px-4 py-6 text-center text-xs text-muted-foreground/60 border-t border-border/40">
+    © {new Date().getFullYear()} Vitor M. Rodovalho · All rights reserved.
+  </footer>
+</BaseLayout>

@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/**
+ * Site-wide design tokens.
+ *
+ * Palette: cooler blue accent + deep neutrals — distinguishes Vitor's
+ * "builder/research hub" tone from Sarah's "academic warm" palette
+ * (parallel sites, intentionally different identities). Same token
+ * convention (oklch, Tailwind v4 CSS-first config).
+ */
+
+@theme {
+  --color-background: oklch(0.99 0.005 260);
+  --color-foreground: oklch(0.2 0.02 260);
+
+  --color-muted: oklch(0.94 0.012 260);
+  --color-muted-foreground: oklch(0.46 0.018 260);
+
+  --color-primary: oklch(0.5 0.12 250);
+  --color-primary-foreground: oklch(0.99 0.005 260);
+
+  --color-border: oklch(0.9 0.012 260);
+
+  --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: oklch(0.16 0.018 260);
+    --color-foreground: oklch(0.95 0.012 260);
+
+    --color-muted: oklch(0.26 0.018 260);
+    --color-muted-foreground: oklch(0.66 0.018 260);
+
+    --color-primary: oklch(0.7 0.13 250);
+    --color-primary-foreground: oklch(0.16 0.018 260);
+
+    --color-border: oklch(0.3 0.018 260);
+  }
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+code,
+pre {
+  font-family: var(--font-mono);
+}
