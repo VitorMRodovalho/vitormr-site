@@ -1,0 +1,458 @@
+---
+import { Image } from "astro:assets";
+import pmiNomineeBadge from "../assets/pmi-latam-nominee-2025.png";
+import SiteFooter from "../components/SiteFooter.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+/**
+ * /recognition — evidence-grade hub of credentials, education, awards,
+ * memberships, continuing education, and community service. Shipped V09a
+ * per council audit 2026-05-10 (product-leader USCIS-counsel rationale:
+ * petition exhibit citable; consolidates scattered credential refs).
+ *
+ * Compliance posture: credential IDs (PMP #, CONFEA #, CMAA #, etc.) are
+ * NOT published here. Pages link to issuing-body verification portals only;
+ * exact IDs go in petition exhibits separately. Coursera + Credly verify
+ * URLs ARE published because those are the canonical public proofs.
+ *
+ * /about retains its narrative-style Education + Certifications sections;
+ * this page is the dense reference. Drift risk acknowledged; future
+ * consolidation deferred.
+ */
+
+const title = "Recognition · Vitor M. Rodovalho";
+const description =
+  "Credentials, education, awards, memberships, and community service — evidence-grade record. PMP®, CMAA, Brazil Civil Engineer license (CONFEA / CREA-GO), Columbia Construction Management Specialization, MBA-FGV, U Akron Executive Program, and PMI LATAM Excellence Awards 2025 nominee.";
+
+const credentials = [
+  {
+    name: "Project Management Professional (PMP®)",
+    issuer: "Project Management Institute (PMI)",
+    issuerUrl: "https://www.pmi.org/certifications/project-management-pmp",
+    status: "Active member",
+    period: "Active",
+  },
+  {
+    name: "Construction Management Association of America (CMAA)",
+    issuer: "CMAA",
+    issuerUrl: "https://www.cmaanet.org",
+    status: "Member",
+    period: "Active",
+  },
+  {
+    name: "Licensed Civil Engineer (Brazil)",
+    issuer: "CONFEA / CREA-GO",
+    issuerUrl: "https://www.confea.org.br",
+    status: "Licensed since 2010",
+    period: "Active",
+  },
+];
+
+const education = [
+  {
+    name: "Construction Management Specialization (5 courses)",
+    school: "Columbia University · Coursera",
+    schoolUrl: "https://www.coursera.org/specializations/construction-management",
+    period: "Aug – Oct 2025",
+    detail:
+      "5-course specialization taught by Ibrahim Odeh, Ph.D., MBA — Department of Civil Engineering and Engineering Mechanics, Columbia University.",
+    courses: [
+      { name: "Construction Project Management", date: "Aug 29, 2025", grade: "88.00%" },
+      { name: "Construction Scheduling", date: "Sep 11, 2025", grade: "89.82%" },
+      { name: "Construction Cost Estimating and Cost Control", date: "Sep 18, 2025", grade: "92.95%" },
+      { name: "Construction Finance", date: "Oct 27, 2025", grade: "90.57%" },
+      { name: "The Construction Industry: The Way Forward", date: "Oct 27, 2025", grade: "96.00%" },
+    ],
+    verifyLabel: "Verify on Coursera",
+    verifyUrl: "https://coursera.org/verify/specialization/PD1SD5B8COKR",
+    credlyLabel: "Credly badge",
+    credlyUrl: "https://www.credly.com/users/vitor-maia-rodovalho.edbf9ddd/badges",
+  },
+  {
+    name: "Executive Program in Innovative Project Management & Business English",
+    school: "College of Business, The University of Akron, Ohio",
+    schoolUrl: "https://www.uakron.edu/cba/",
+    period: "Feb – Mar 2022",
+    detail: "LAIOB Scholarship recipient.",
+  },
+  {
+    name: "Executive MBA in Real Estate Business & Construction Management",
+    school: "Fundação Getulio Vargas (FGV), Brasília",
+    schoolUrl: "https://fgv.br/",
+    period: "2012 – 2016",
+    detail: "Direcional +Educação Scholarship recipient.",
+  },
+  {
+    name: "Bachelor of Civil Engineering",
+    school: "Pontifícia Universidade Católica de Goiás",
+    schoolUrl: "https://www.pucgoias.edu.br/",
+    period: "2004 – 2010",
+    detail:
+      "Diploma awarded 2010. Started at Universidade Estadual de Goiás and transferred mid-program; community work and student-government experience all from the UEG years.",
+  },
+];
+
+const awards = [
+  {
+    name: "PMI LATAM Excellence Awards 2025 — Nominee",
+    category: "“Carlos Novello” Volunteer of the Year · LATAM Brasil",
+    issuer: "Project Management Institute · LATAM region",
+    year: "2025",
+    detail:
+      "Chapter-nominated by PMI Brazil Goiás for sustained voluntary contribution to the AI ⨯ Project Management research initiative across federated Brazilian chapters. Notification by PMI LATAM Chapter Engagement (Diana Victor) on December 18, 2025.",
+    badge: pmiNomineeBadge,
+  },
+  {
+    name: "LAIOB Scholarship",
+    category: "Innovative Project Management Executive Program · The University of Akron",
+    issuer: "LAIOB",
+    year: "2022",
+    detail: "Competitive selection for the executive program; full scholarship.",
+  },
+  {
+    name: "Direcional +Educação Scholarship",
+    category: "Postgraduate studies — MBA Real Estate Business & Construction Management at FGV",
+    issuer: "Direcional Engenharia",
+    year: "2012",
+    detail: "Employer-sponsored postgraduate scholarship.",
+  },
+];
+
+const continuingEducation = {
+  aiPm: [
+    "PMI Talking to AI: Prompt Engineering",
+    "PMI Generative AI Overview",
+    "Generative AI Prompt Engineering Basics",
+    "AI-Driven PM Techniques (Ricardo Vargas)",
+  ],
+  sustainability: [
+    "Career Essentials in Sustainable Tech (Microsoft + LinkedIn)",
+    "Microsoft Cloud for Sustainability — ESG",
+    "Including Sustainability in Cloud Strategy",
+  ],
+  foundations: [
+    "Construction Scheduling",
+    "Business Analysis Foundations",
+    "Data Analytics",
+    "Cloud Computing First Steps",
+  ],
+};
+
+const community = [
+  {
+    role: "Co-founder · Platform & framework author",
+    org: "AI & PM Research Hub (Núcleo IA & GP)",
+    affiliation: "PMI Brazil · multi-chapter (Mar 2023 – present)",
+    detail:
+      "Voluntary inter-chapter PMI Brazil research initiative on AI ⨯ Project Management. Co-founded; author of the open-source platform and the management framework.",
+    href: "https://nucleoia.vitormr.dev",
+  },
+  {
+    role: "Project Manager",
+    org: "PMI Brazil Goiás Chapter",
+    affiliation: "Aug 2019 – Dec 2021",
+    detail: "Chapter-level project management volunteer, two-and-a-half years.",
+  },
+  {
+    role: "Mentor",
+    org: "PMI & GPjr Latin America Connection Journey",
+    affiliation: "Oct 2020 – Dec 2020",
+    detail: "Mentorship cohort for early-career Latin American project-management professionals.",
+  },
+  {
+    role: "Sales Volunteer",
+    org: "Fundação Estudar — “Na Prática”",
+    affiliation: "Oct 2019 – Oct 2021",
+    detail: "Two-year volunteer sales work for a Brazilian career-development foundation.",
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-20">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;Recognition
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Credentials, awards, and<br />
+          community service<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Evidence-grade reference. Issuing bodies linked for verification;
+          credential IDs are kept private and shared on request. Education
+          and certifications also appear in narrative form on
+          <a href="/about" class="link-soft hover:text-foreground">/about</a>;
+          this page is the dense record.
+        </p>
+      </header>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Credentials</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            Active
+          </span>
+        </div>
+        <ol class="space-y-6">
+          {
+            credentials.map((c, i) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
+                <div class="space-y-1.5 min-w-0">
+                  <h3 class="text-lg font-semibold tracking-tight">{c.name}</h3>
+                  <p class="text-sm text-muted-foreground">
+                    <a href={c.issuerUrl} class="link-soft hover:text-foreground" rel="noopener">
+                      {c.issuer}
+                    </a>
+                    {" · "}
+                    <span class="tnum">{c.period}</span>
+                  </p>
+                  <p class="text-[0.95rem] leading-relaxed">{c.status}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Education</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            <span class="tnum">2004</span> – present
+          </span>
+        </div>
+        <ol class="space-y-8">
+          {
+            education.map((e, i) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
+                <div class="space-y-2 min-w-0">
+                  <h3 class="text-lg font-semibold tracking-tight">{e.name}</h3>
+                  <p class="text-sm text-muted-foreground">
+                    <a href={e.schoolUrl} class="link-soft hover:text-foreground" rel="noopener">
+                      {e.school}
+                    </a>
+                    {" · "}
+                    <span class="tnum">{e.period}</span>
+                  </p>
+                  <p class="text-[0.95rem] leading-relaxed">{e.detail}</p>
+                  {e.courses && (
+                    <details class="text-sm pt-1">
+                      <summary class="cursor-pointer font-medium link-soft inline-block">
+                        {e.courses.length} course certificates →
+                      </summary>
+                      <ul class="mt-2.5 space-y-1.5 pl-4 border-l border-border/60">
+                        {e.courses.map((c) => (
+                          <li class="flex flex-col gap-0.5">
+                            <span class="font-medium">{c.name}</span>
+                            <span class="text-xs text-muted-foreground tnum">
+                              {c.date} · grade {c.grade}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                  {(e.verifyUrl || e.credlyUrl) && (
+                    <p class="text-xs pt-1 flex flex-wrap gap-x-4 gap-y-1">
+                      {e.verifyUrl && (
+                        <a
+                          href={e.verifyUrl}
+                          class="link-soft hover:text-foreground"
+                          rel="noopener"
+                        >
+                          {e.verifyLabel} ↗
+                        </a>
+                      )}
+                      {e.credlyUrl && (
+                        <a
+                          href={e.credlyUrl}
+                          class="link-soft hover:text-foreground"
+                          rel="noopener"
+                        >
+                          {e.credlyLabel} ↗
+                        </a>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Awards &amp; honors</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            Three entries
+          </span>
+        </div>
+        <ol class="space-y-10">
+          {
+            awards.map((a, i) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 class="text-lg font-semibold tracking-tight">{a.name}</h3>
+                    <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground tnum">
+                      {a.year}
+                    </span>
+                  </div>
+                  <p class="text-sm text-muted-foreground">
+                    {a.category}
+                  </p>
+                  <p class="text-[0.95rem] leading-relaxed">{a.detail}</p>
+                  {a.badge && (
+                    <div class="pt-3">
+                      <Image
+                        src={a.badge}
+                        alt={`PMI LATAM Excellence Awards 2025 nominee badge — ${a.category}`}
+                        widths={[120, 160, 240]}
+                        sizes="(min-width: 768px) 160px, 120px"
+                        class="w-[120px] md:w-[160px] aspect-square object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Memberships</h2>
+        </div>
+        <ul class="space-y-2 text-[0.95rem] leading-relaxed">
+          <li>
+            <a
+              href="https://www.pmi.org"
+              class="link-soft hover:text-foreground"
+              rel="noopener">Project Management Institute (PMI)</a
+            > member · since <span class="tnum">2019</span>
+          </li>
+          <li>
+            <a
+              href="https://www.cmaanet.org"
+              class="link-soft hover:text-foreground"
+              rel="noopener">Construction Management Association of America (CMAA)</a
+            > member
+          </li>
+          <li>
+            <a
+              href="https://www.confea.org.br"
+              class="link-soft hover:text-foreground"
+              rel="noopener">CONFEA / CREA-GO</a
+            > licensed civil engineer · since <span class="tnum">2010</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Continuing education</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            Selected
+          </span>
+        </div>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          Selected courses below; full library on
+          <a
+            href="https://www.linkedin.com/in/vitor-rodovalho-pmp/details/certifications/"
+            class="link-soft hover:text-foreground"
+            rel="noopener">LinkedIn</a
+          >.
+        </p>
+        <div class="space-y-5">
+          <div class="space-y-1.5">
+            <h3 class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+              AI ⨯ Project Management
+            </h3>
+            <ul class="space-y-1 text-[0.95rem] leading-relaxed pl-5 list-disc marker:text-primary">
+              {continuingEducation.aiPm.map((c) => <li>{c}</li>)}
+            </ul>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+              Sustainability + Cloud
+            </h3>
+            <ul class="space-y-1 text-[0.95rem] leading-relaxed pl-5 list-disc marker:text-primary">
+              {continuingEducation.sustainability.map((c) => <li>{c}</li>)}
+            </ul>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+              Foundations
+            </h3>
+            <ul class="space-y-1 text-[0.95rem] leading-relaxed pl-5 list-disc marker:text-primary">
+              {continuingEducation.foundations.map((c) => <li>{c}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Community leadership &amp; service</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            Since <span class="tnum">2019</span>
+          </span>
+        </div>
+        <ol class="space-y-7">
+          {
+            community.map((c, i) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                      {c.role}
+                    </span>
+                    {c.href ? (
+                      <a
+                        href={c.href}
+                        class="text-lg font-semibold tracking-tight link-soft"
+                        rel="noopener"
+                      >
+                        {c.org}
+                      </a>
+                    ) : (
+                      <h3 class="text-lg font-semibold tracking-tight">{c.org}</h3>
+                    )}
+                  </div>
+                  <p class="text-sm text-muted-foreground tnum">{c.affiliation}</p>
+                  <p class="text-[0.95rem] leading-relaxed">{c.detail}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="space-y-3 pt-2">
+        <p class="text-xs text-muted-foreground/85 leading-relaxed">
+          Credential IDs (PMP, CMAA, CONFEA / CREA-GO, etc.) are kept
+          private and shared on request for petition exhibits or formal
+          verification. Public links above point to issuing-body
+          verification portals or canonical proof artifacts (Coursera,
+          Credly).
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
