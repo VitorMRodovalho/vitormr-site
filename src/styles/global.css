@@ -1,59 +1,214 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap");
 
 /**
- * Site-wide design tokens.
+ * Mono-forward design system for vitormr.dev — V02.5 design pass per
+ * frontend-design skill output 2026-05-09 (with council guardrails:
+ * ux-principal + product-leader + tech-architect).
  *
- * Palette: cooler blue accent + deep neutrals — distinguishes Vitor's
- * "builder/research hub" tone from Sarah's "academic warm" palette
- * (parallel sites, intentionally different identities). Same token
- * convention (oklch, Tailwind v4 CSS-first config).
+ * Aesthetic direction: print-engineering tabular precision + builder/hacker
+ * authenticity.
+ *  - JetBrains Mono for display, chrome, numbers, eyebrows (IC-engineer voice)
+ *  - Atkinson Hyperlegible for body (accessibility-forward humanist sans;
+ *    distinctively differentiates 0/O 1/l/I; signals craft over Inter slop)
+ *  - Hi-vis safety amber as sole signature accent — link underlines, section
+ *    numbers, role badges, build stamps. Everything else neutral grayscale
+ *    so the amber genuinely impacts.
+ *  - Light mode default; @media dark override.
+ *  - CSS-only motion (staggered fadeUp on first paint, prefers-reduced-motion
+ *    guarded). Zero-JS by default per Astro Islands invariant.
+ *
+ * Constraint invariant (tech-architect): all tokens live in this @theme
+ * block only. NO component-level color/font literals so V03/V04/V05 PRs
+ * inherit cleanly without churn.
  */
 
 @theme {
-  --color-background: oklch(0.99 0.005 260);
-  --color-foreground: oklch(0.2 0.02 260);
+  /* Color — neutral grayscale + signature amber accent */
+  --color-background: oklch(0.99 0.001 90);
+  --color-foreground: oklch(0.18 0.005 90);
 
-  --color-muted: oklch(0.94 0.012 260);
-  --color-muted-foreground: oklch(0.46 0.018 260);
+  --color-muted: oklch(0.96 0.001 90);
+  --color-muted-foreground: oklch(0.5 0.005 90);
 
-  --color-primary: oklch(0.5 0.12 250);
-  --color-primary-foreground: oklch(0.99 0.005 260);
+  --color-primary: oklch(0.8 0.16 80);
+  --color-primary-foreground: oklch(0.18 0.005 90);
 
-  --color-border: oklch(0.9 0.012 260);
+  --color-accent: oklch(0.18 0.005 90);
+  --color-accent-foreground: oklch(0.99 0.001 90);
 
-  --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Monaco, "Cascadia Code", monospace;
+  --color-border: oklch(0.9 0.002 90);
+  --color-border-strong: oklch(0.78 0.005 90);
+
+  /* Type — mono-forward dual */
+  --font-display: "JetBrains Mono", ui-monospace, "SF Mono", Monaco, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Monaco, monospace;
+  --font-sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Motion curves */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: oklch(0.16 0.018 260);
-    --color-foreground: oklch(0.95 0.012 260);
+    --color-background: oklch(0.14 0.001 90);
+    --color-foreground: oklch(0.97 0.001 90);
 
-    --color-muted: oklch(0.26 0.018 260);
-    --color-muted-foreground: oklch(0.66 0.018 260);
+    --color-muted: oklch(0.22 0.001 90);
+    --color-muted-foreground: oklch(0.65 0.005 90);
 
-    --color-primary: oklch(0.7 0.13 250);
-    --color-primary-foreground: oklch(0.16 0.018 260);
+    --color-primary: oklch(0.85 0.17 80);
+    --color-primary-foreground: oklch(0.14 0.001 90);
 
-    --color-border: oklch(0.3 0.018 260);
+    --color-accent: oklch(0.97 0.001 90);
+    --color-accent-foreground: oklch(0.14 0.001 90);
+
+    --color-border: oklch(0.28 0.005 90);
+    --color-border-strong: oklch(0.45 0.005 90);
   }
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "ss02";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+/* Mono-forward headings */
 h1,
 h2,
-h3 {
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "ss02", "zero";
+}
+h1 {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+h2 {
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
+h3 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
 
+/* Code + inline mono */
 code,
-pre {
+pre,
+kbd,
+samp {
   font-family: var(--font-mono);
+  font-feature-settings: "zero";
+}
+
+/* Selection: amber highlight */
+::selection {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+/* Tabular numerals utility */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum", "zero";
+}
+
+/* CSS-only stagger fade on first paint */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim-fade-up {
+    animation: fadeUp 0.65s var(--ease-out-expo) both;
+  }
+  .anim-d-1 {
+    animation-delay: 0.05s;
+  }
+  .anim-d-2 {
+    animation-delay: 0.1s;
+  }
+  .anim-d-3 {
+    animation-delay: 0.18s;
+  }
+  .anim-d-4 {
+    animation-delay: 0.26s;
+  }
+  .anim-d-5 {
+    animation-delay: 0.34s;
+  }
+  .anim-d-6 {
+    animation-delay: 0.42s;
+  }
+}
+
+/* Soft underline craft: subtle base, amber on hover via background-image grow */
+.link-soft {
+  background-image: linear-gradient(
+    transparent 60%,
+    var(--color-primary) 60%,
+    var(--color-primary) 90%,
+    transparent 90%
+  );
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  transition:
+    background-size 280ms var(--ease-out-expo),
+    color 240ms var(--ease-out-expo);
+}
+.link-soft:hover,
+.link-soft:focus-visible {
+  background-size: 100% 100%;
+  color: var(--color-foreground);
+  outline: none;
+}
+
+/* Section number anchors — used in /about phase headers + featured project list */
+.section-num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  font-feature-settings: "tnum", "zero";
+}
+
+/* Build stamp — footer/signature monospace */
+.build-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+  font-feature-settings: "tnum", "zero";
+}
+
+/* Role pill (e.g. AUTHOR / FOUNDER badges in featured projects) */
+.role-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-radius: 0.125rem;
+  font-feature-settings: "tnum", "zero";
 }

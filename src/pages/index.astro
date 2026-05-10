@@ -2,169 +2,204 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
- * Homepage — Hero + "What I'm building" preview + sibling sites footer.
+ * Homepage — Hero + "What I'm building" 4-card section + footer with
+ * sibling sites + build stamp.
  *
- * Positioning: Senior Cost Manager (Linesight, current) + open-source
- * maintainer (MeridianIQ + Núcleo IA & GP + Panorama) + researcher
- * (AI ⨯ PM community of practice). Lead with the integrated specialty
- * — data-driven controls + AI-augmented infrastructure delivery —
- * to honor the EB-2 NIW counter-bias note from `project_case_facts_2026-04-26.md`
- * about case-2 SOC mismatch defect.
+ * V02.5 design pass per frontend-design skill output 2026-05-09 (council-
+ * guardrailed). Mono-forward print-engineering aesthetic with hi-vis amber
+ * signature. Section numbers as anchors. Staggered fadeUp on first paint.
  *
- * Tone: builder-first. No corporate puffery. Anchored facts only —
- * every quantitative claim is on Vitor's public LinkedIn or a public
- * GitHub README. PII boundary per ADR-023 §D8.
+ * Featured projects: 4 cards — AI & PM Research Hub (Founder), MeridianIQ
+ * (Author), Panorama (Author), Orenu (Founder). Naming convention:
+ * English-primary with PT name in parens.
  */
 
 const title = "Vitor M. Rodovalho";
 const description =
-  "Senior Cost Manager at Linesight · hyperscale data center delivery · founder of the AI & PM Research Hub at PMI Brazil · open-source maintainer of MeridianIQ + Panorama. 15+ years across U.S. and Brazil.";
+  "Senior Cost Manager at Linesight · hyperscale data center delivery · founder of the AI & PM Research Hub at PMI Brazil · open-source builder of MeridianIQ + Panorama. 15+ years across U.S. and Brazil.";
 
 const featured = [
   {
-    name: "Núcleo IA & GP",
-    tagline: "AI & PM Research Hub at PMI Brazil",
+    slug: "nucleo-ia-gp",
+    name: "AI & PM Research Hub",
+    nameAlt: "Núcleo IA & GP",
+    role: "Founder",
+    tagline: "AI ⨯ Project Management research community at PMI Brazil",
     blurb:
-      "52 active researchers across 5 federated PMI chapters (GO · CE · DF · MG · RS), 7 research streams, 266 MCP tools, 4,000+ i18n keys across EN/PT/ES. Founded as a pilot in 2024.",
+      "52 active researchers across 5 federated PMI chapters (GO · CE · DF · MG · RS), 7 research streams, 266 MCP tools, 4,000+ i18n keys (EN/PT/ES). Founded as a PMI Goiás pilot in 2024.",
     href: "https://nucleoia.vitormr.dev",
-    badge: "Founder",
   },
   {
+    slug: "meridianiq",
     name: "MeridianIQ",
+    role: "Author",
     tagline: "Open-source schedule intelligence",
     blurb:
-      "From validation to prediction to cost-schedule integration. 48 analysis engines, 1,490+ tests, 22 Claude MCP tools, P6 XER + MS Project XML. Standards-traceable to AACE / DCMA / SCL / GAO. v4.2.0 in production.",
+      "Validation, prediction, and cost-schedule integration. 48 analysis engines, 1,490+ tests, 22 Claude MCP tools, P6 XER + MS Project XML. Standards-traceable to AACE, DCMA, SCL, GAO. v4.2.0 in production.",
     href: "https://meridianiq.vitormr.dev",
-    badge: "Author",
   },
   {
+    slug: "panorama",
     name: "Panorama",
+    role: "Author",
     tagline: "Open-source IT asset + fleet management",
     blurb:
-      "Successor to Snipe-IT plus a custom scheduling overlay. Multi-tenant Postgres RLS, OIDC, trilingual EN/PT-BR/ES. Born from a real need at AECOM B&P Tunnel program. AGPL-3.0 + Enterprise.",
+      "Successor to Snipe-IT plus a custom scheduling overlay. Multi-tenant Postgres RLS, OIDC, trilingual EN/PT-BR/ES. Built from a real need at AECOM B&P Tunnel program. AGPL-3.0 + Enterprise.",
     href: "https://panorama.vitormr.dev",
-    badge: "Maintainer",
+  },
+  {
+    slug: "orenu",
+    name: "Orenu",
+    role: "Founder",
+    tagline: "Family fintech for cross-border BR↔US households",
+    blurb:
+      "Four domain pillars (Financial · Tax · Wealth · Immigration) anchored by an AI-augmented data layer; cross-cutting estate-continuity and insurance-planning meta-layers. Private platform — invite-only beta planned per ADR-008 platform path.",
+    href: "https://orenu.vitormr.dev",
   },
 ];
+
+const buildDate = new Date().toISOString().slice(0, 10);
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 px-4 py-16 md:py-24">
-    <div class="max-w-3xl mx-auto space-y-16">
-      <header class="space-y-6">
-        <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Senior Cost Manager · Open-source builder · Researcher
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto">
+      <header class="space-y-7">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground anim-fade-up anim-d-1"
+        >
+          <span class="text-primary">§</span>&nbsp;Senior Cost Manager · Open-source builder · Researcher
         </p>
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          Vitor M. Rodovalho
+
+        <h1
+          class="text-[2.6rem] sm:text-6xl md:text-7xl font-bold tracking-[-0.04em] leading-[0.95] anim-fade-up anim-d-2"
+        >
+          Vitor M.<br />Rodovalho<span class="text-primary">.</span>
         </h1>
-        <p class="text-base sm:text-lg leading-relaxed">
-          Building cost intelligence for the AI-infrastructure economy.
+
+        <p class="text-lg sm:text-xl leading-snug font-medium anim-fade-up anim-d-3">
+          Building cost intelligence for the&nbsp;<span class="link-soft">AI&#8209;infrastructure economy</span>.
         </p>
-        <p class="text-base text-muted-foreground leading-relaxed">
-          Senior Cost Manager at <strong>Linesight</strong>, supporting hyperscale
-          data-center delivery. 15+ years across capital programs in the U.S. and
-          Brazil — from $6.7B Northeast Corridor rail (Amtrak / B&P Tunnel) at
-          AECOM, to $1B higher-education bond programs, to 1,300+ residential
-          units delivered. Founder of the <strong>AI & PM Research Hub</strong> at
-          PMI Brazil — 52 researchers across 5 federated chapters.
-        </p>
-        <p class="text-sm text-muted-foreground leading-relaxed">
-          Almost everything I build is open-source. PMP® · Civil Engineer (Brazil)
-          · MBA-FGV · Linux user since 2006.
-        </p>
-        <nav class="pt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <a href="/about" class="underline hover:text-foreground">About</a>
+
+        <div
+          class="space-y-4 text-[0.95rem] leading-relaxed text-muted-foreground anim-fade-up anim-d-4"
+        >
+          <p>
+            Senior Cost Manager at <strong class="text-foreground">Linesight</strong>, supporting
+            hyperscale data&#8209;center delivery. 15+ years across capital programs in the U.S.
+            and Brazil — from <span class="tnum">$6.7B</span> Northeast Corridor rail (Amtrak / B&amp;P
+            Tunnel) at AECOM, to <span class="tnum">$1B</span> higher&#8209;education bond programs,
+            to <span class="tnum">1,300+</span> residential units delivered. Founder of the
+            <strong class="text-foreground">AI &amp; PM Research Hub</strong> at PMI Brazil —
+            <span class="tnum">52</span> researchers across <span class="tnum">5</span> federated chapters.
+          </p>
+          <p class="text-sm">
+            Almost everything I build is open&#8209;source. PMP® · Civil Engineer (Brazil) ·
+            MBA&#8209;FGV · Linux user since 2006.
+          </p>
+        </div>
+
+        <nav class="pt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm anim-fade-up anim-d-5">
+          <a href="/about" class="link-soft hover:text-foreground">About</a>
           <a
             href="https://www.linkedin.com/in/vitor-rodovalho-pmp"
-            class="underline hover:text-foreground"
-            rel="noopener"
+            class="link-soft hover:text-foreground"
+            rel="noopener">LinkedIn</a
           >
-            LinkedIn
-          </a>
           <a
             href="https://github.com/VitorMRodovalho"
-            class="underline hover:text-foreground"
-            rel="noopener"
+            class="link-soft hover:text-foreground"
+            rel="noopener">GitHub</a
           >
-            GitHub
-          </a>
-          <a
-            href="mailto:vitor@vitormr.dev"
-            class="underline hover:text-foreground"
-          >
-            Email
-          </a>
+          <a href="mailto:vitor@vitormr.dev" class="link-soft hover:text-foreground">Email</a>
         </nav>
       </header>
 
-      <section class="space-y-6">
-        <div class="flex items-baseline justify-between">
-          <h2 class="text-2xl font-bold tracking-tight">What I'm building</h2>
-          <span class="text-xs uppercase tracking-[0.15em] text-muted-foreground">
-            Public projects
+      <section class="mt-24 sm:mt-32 space-y-10 anim-fade-up anim-d-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-4">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight">What I'm building</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            Active projects
           </span>
         </div>
-        <ul class="space-y-6">
+
+        <ol class="space-y-12">
           {
-            featured.map((p) => (
-              <li class="space-y-2 border-l-2 border-primary/30 pl-6">
-                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-primary">
-                    {p.badge}
-                  </span>
-                  <a
-                    href={p.href}
-                    class="text-xl font-semibold underline-offset-4 hover:underline"
-                    rel="noopener"
-                  >
-                    {p.name}
-                  </a>
+            featured.map((p, i) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
+                <div class="space-y-2.5 min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+                    <span class="role-pill">{p.role}</span>
+                    <a
+                      href={p.href}
+                      class="text-xl sm:text-2xl font-bold tracking-tight link-soft"
+                      rel="noopener"
+                    >
+                      {p.name}
+                    </a>
+                    {p.nameAlt && (
+                      <span class="text-sm text-muted-foreground italic">({p.nameAlt})</span>
+                    )}
+                  </div>
+                  <p class="text-sm font-medium text-muted-foreground">
+                    <code class="text-foreground">{p.slug}/</code> · {p.tagline}
+                  </p>
+                  <p class="text-[0.95rem] leading-relaxed">{p.blurb}</p>
                 </div>
-                <p class="text-sm font-medium text-muted-foreground">{p.tagline}</p>
-                <p class="text-sm leading-relaxed">{p.blurb}</p>
               </li>
             ))
           }
-        </ul>
-        <p class="text-xs text-muted-foreground/70 pt-2">
-          Plus <a href="https://orenu.vitormr.dev" class="underline" rel="noopener">Orenu</a>
-          {" "}(private platform; family fintech) and{" "}
-          <a
-            href="https://github.com/VitorMRodovalho?tab=repositories"
-            class="underline"
-            rel="noopener"
+        </ol>
+
+        <p class="text-xs text-muted-foreground/85 pt-2 leading-relaxed">
+          Plus <a
+            href="https://github.com/VitorMRodovalho/SnipeScheduler-FleetManager"
+            class="link-soft"
+            rel="noopener">SnipeScheduler-FleetManager</a
           >
+          (predecessor to Panorama, GPL-3.0) and {" "}
+          <a href="https://github.com/VitorMRodovalho?tab=repositories" class="link-soft" rel="noopener">
             14 public repos
           </a>{" "}
-          including 4 anonymized Power BI suites (~6,151 DAX measures across
-          Brazilian real estate analytics).
+          including 4 anonymized Power BI suites — ~6,151 DAX measures across Brazilian real-estate analytics.
         </p>
       </section>
     </div>
   </main>
 
-  <footer class="px-4 py-10 border-t border-border/40">
-    <div class="max-w-3xl mx-auto space-y-4 text-xs text-muted-foreground/80">
-      <div class="flex flex-wrap gap-x-5 gap-y-1.5">
-        <a href="https://nucleoia.vitormr.dev" class="hover:text-foreground" rel="noopener">
-          nucleoia.vitormr.dev
-        </a>
-        <a href="https://meridianiq.vitormr.dev" class="hover:text-foreground" rel="noopener">
-          meridianiq.vitormr.dev
-        </a>
-        <a href="https://panorama.vitormr.dev" class="hover:text-foreground" rel="noopener">
-          panorama.vitormr.dev
-        </a>
-        <a href="https://orenu.vitormr.dev" class="hover:text-foreground" rel="noopener">
-          orenu.vitormr.dev
-        </a>
-        <a href="https://sarahrodovalho.com" class="hover:text-foreground" rel="noopener">
-          sarahrodovalho.com
-        </a>
-      </div>
-      <p class="text-muted-foreground/60">
-        © {new Date().getFullYear()} Vitor M. Rodovalho · All rights reserved.
+  <footer class="px-6 sm:px-10 lg:px-16 py-12 border-t border-border mt-16">
+    <div class="max-w-3xl mx-auto space-y-6">
+      <ul class="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground">
+        <li>
+          <a href="https://nucleoia.vitormr.dev" class="link-soft hover:text-foreground" rel="noopener"
+            >nucleoia.vitormr.dev</a
+          >
+        </li>
+        <li>
+          <a href="https://meridianiq.vitormr.dev" class="link-soft hover:text-foreground" rel="noopener"
+            >meridianiq.vitormr.dev</a
+          >
+        </li>
+        <li>
+          <a href="https://panorama.vitormr.dev" class="link-soft hover:text-foreground" rel="noopener"
+            >panorama.vitormr.dev</a
+          >
+        </li>
+        <li>
+          <a href="https://orenu.vitormr.dev" class="link-soft hover:text-foreground" rel="noopener"
+            >orenu.vitormr.dev</a
+          >
+        </li>
+        <li>
+          <a href="https://sarahrodovalho.com" class="link-soft hover:text-foreground" rel="noopener"
+            >sarahrodovalho.com</a
+          >
+        </li>
+      </ul>
+      <p class="build-stamp tnum">
+        BUILD&nbsp;{buildDate}&nbsp;·&nbsp;ASTRO&nbsp;6.3&nbsp;·&nbsp;TAILWIND&nbsp;V4&nbsp;·&nbsp;©
+        {new Date().getFullYear()}&nbsp;VITOR&nbsp;M.&nbsp;RODOVALHO
       </p>
     </div>
   </footer>
