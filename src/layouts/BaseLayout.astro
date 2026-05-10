@@ -14,10 +14,23 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 interface Props {
   title: string;
   description: string;
+  /**
+   * Optional Schema.org JSON-LD payload(s) appended AFTER the default Person
+   * markup. Single object or array. Per-page enrichment for V09b (e.g.,
+   * SoftwareApplication on /projects/[slug], CollectionPage on /portfolio/*,
+   * extended Person on /recognition). Search engines aggregate same-entity
+   * Person blocks via shared `url` + `sameAs`.
+   */
+  schemaJsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, schemaJsonLd } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const extraSchemas: Record<string, unknown>[] = schemaJsonLd
+  ? Array.isArray(schemaJsonLd)
+    ? schemaJsonLd
+    : [schemaJsonLd]
+  : [];
 ---
 
 <!doctype html>
@@ -127,6 +140,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
         ],
       })}
     />
+
+    {
+      extraSchemas.map((s) => (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(s)}
+        />
+      ))
+    }
   </head>
   <body class="min-h-screen flex flex-col">
     <ThemeToggle />

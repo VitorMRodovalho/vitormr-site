@@ -166,9 +166,62 @@ const community = [
     detail: "Two-year volunteer sales work for a Brazilian career-development foundation.",
   },
 ];
+
+// Schema.org extended Person — surfaces hasCredential, alumniOf, and award
+// arrays that BaseLayout's default Person doesn't include. Same `url` +
+// `sameAs` so search engines aggregate this with the default Person entity.
+const recognitionPersonSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Vitor Maia Rodovalho",
+  alternateName: ["Vitor M. Rodovalho", "Vitor Rodovalho"],
+  url: "https://vitormr.dev",
+  sameAs: [
+    "https://www.linkedin.com/in/vitor-rodovalho-pmp",
+    "https://github.com/VitorMRodovalho",
+    "https://www.credly.com/users/vitor-maia-rodovalho.edbf9ddd/badges",
+  ],
+  hasCredential: [
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Project Management Professional (PMP®)",
+      credentialCategory: "certification",
+      recognizedBy: { "@type": "Organization", name: "Project Management Institute (PMI)", url: "https://www.pmi.org" },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Licensed Civil Engineer (Brazil)",
+      credentialCategory: "license",
+      recognizedBy: { "@type": "Organization", name: "CONFEA / CREA-GO", url: "https://www.confea.org.br" },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Construction Management Specialization",
+      credentialCategory: "certificate",
+      recognizedBy: { "@type": "EducationalOrganization", name: "Columbia University", url: "https://www.coursera.org/specializations/construction-management" },
+      url: "https://coursera.org/verify/specialization/PD1SD5B8COKR",
+    },
+  ],
+  alumniOf: [
+    { "@type": "EducationalOrganization", name: "Columbia University (Coursera Specialization)", url: "https://www.coursera.org/specializations/construction-management" },
+    { "@type": "EducationalOrganization", name: "The University of Akron, College of Business", url: "https://www.uakron.edu/cba/" },
+    { "@type": "EducationalOrganization", name: "Fundação Getulio Vargas (FGV)", url: "https://fgv.br/" },
+    { "@type": "EducationalOrganization", name: "Pontifícia Universidade Católica de Goiás", url: "https://www.pucgoias.edu.br/" },
+  ],
+  affiliation: [
+    { "@type": "Organization", name: "Project Management Institute (PMI)", url: "https://www.pmi.org" },
+    { "@type": "Organization", name: "Construction Management Association of America (CMAA)", url: "https://www.cmaanet.org" },
+    { "@type": "Organization", name: "AI & PM Research Hub (Núcleo IA & GP)", url: "https://nucleoia.vitormr.dev" },
+  ],
+  award: [
+    "PMI LATAM Excellence Awards 2025 — Nominee, “Carlos Novello” Volunteer of the Year (LATAM Brasil)",
+    "LAIOB Scholarship — Innovative Project Management Executive Program (University of Akron, 2022)",
+    "Direcional +Educação Scholarship — Postgraduate studies at FGV (2012)",
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} schemaJsonLd={recognitionPersonSchema}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto space-y-20">
       <header class="space-y-5">

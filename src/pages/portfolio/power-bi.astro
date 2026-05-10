@@ -26,9 +26,38 @@ const title = "Power BI Portfolio · Vitor M. Rodovalho";
 const description =
   "Tier 2 anonymized Power BI artifacts — 4 production suites totaling 24 dashboards and ~6,151 DAX measures across Brazilian real-estate development and BPO financial operations. All MIT-licensed, all anonymized.";
 
+// Schema.org CollectionPage — each Power BI suite as CreativeWork part.
+// Knowledge Graph treats this page as a curated collection of related
+// data-visualization artifacts authored by Vitor.
+const portfolioSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Power BI Portfolio",
+  description,
+  url: "https://vitormr.dev/portfolio/power-bi/",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  hasPart: suites.map((s) => ({
+    "@type": "CreativeWork",
+    name: s.data.name,
+    description: s.data.summary,
+    genre: "Data Visualization",
+    keywords: [s.data.tagline, ...(s.data.techStack ?? [])].join(", "),
+    license: "https://opensource.org/licenses/MIT",
+    codeRepository: s.data.repoUrl,
+    author: {
+      "@type": "Person",
+      name: "Vitor Maia Rodovalho",
+      url: "https://vitormr.dev",
+    },
+  })),
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} schemaJsonLd={portfolioSchema}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto space-y-16">
       <header class="space-y-5">
