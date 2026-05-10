@@ -41,8 +41,10 @@ const experience = defineCollection({
  *
  * Schema design notes:
  *  - One-pager case study format: problem → approach → impact → stack → links
- *  - `role` constrained to the badge taxonomy (Founder / Author / Maintainer /
- *    Contributor) so the role-pill class renders consistently
+ *  - `role` constrained to the badge taxonomy (Founder / Co-founder / Author /
+ *    Maintainer / Contributor) so the role-pill class renders consistently.
+ *    "Co-founder" is reserved for collective initiatives where Vitor is one
+ *    of multiple founders; sole-founder solo work uses "Founder".
  *  - `status` is free text (e.g., "v4.3.0 in production", "Pre-alpha · pilot
  *    prep", "Private platform · invite-only beta planned")
  *  - `links.live` is the live deployment URL; `links.repo` the GitHub repo
@@ -54,7 +56,7 @@ const projects = defineCollection({
   schema: z.object({
     name: z.string(),
     nameAlt: z.string().optional(),
-    role: z.enum(["Founder", "Author", "Maintainer", "Contributor"]),
+    role: z.enum(["Founder", "Co-founder", "Author", "Maintainer", "Contributor"]),
     tagline: z.string(),
     summary: z.string(),
     problem: z.string(),
