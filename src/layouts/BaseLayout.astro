@@ -8,6 +8,7 @@
  */
 
 import "../styles/global.css";
+import ThemeToggle from "../components/ThemeToggle.astro";
 
 interface Props {
   title: string;
@@ -127,6 +128,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     />
   </head>
   <body class="min-h-screen flex flex-col">
+    <ThemeToggle />
     <slot />
   </body>
 </html>

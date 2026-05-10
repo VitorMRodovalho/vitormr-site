@@ -1,0 +1,142 @@
+---
+/**
+ * ThemeToggle — segmented mono-styled pill for Light / Dark / System.
+ *
+ * V06b second half of V06 split. The pre-paint bootstrap script in
+ * BaseLayout already resolves localStorage.theme → data-theme on <html>;
+ * this island is the WRITE side: clicking a button persists the choice
+ * and re-applies the resolved theme without a reload.
+ *
+ * "System" persists the literal string "system" in localStorage; on next
+ * page load the bootstrap reads it and resolves matchMedia at that point.
+ * If the user picks System and the OS preference flips while the page is
+ * open, the matchMedia change listener below re-applies the new theme.
+ *
+ * Vanilla Astro <script> module — no framework hydration needed for a
+ * 3-button pill. Bundle weight ~600 bytes after minification.
+ */
+---
+
+<div class="theme-toggle" role="group" aria-label="Theme">
+  <button type="button" data-theme-set="light">Light</button>
+  <button type="button" data-theme-set="dark">Dark</button>
+  <button type="button" data-theme-set="system">System</button>
+</div>
+
+<script>
+  type ThemeChoice = "light" | "dark" | "system";
+
+  function resolveTheme(choice: ThemeChoice): "light" | "dark" {
+    if (choice === "system") {
+      return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return choice;
+  }
+
+  function readChoice(): ThemeChoice {
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark" || saved === "system") return saved;
+    } catch {
+      // localStorage may be blocked (Safari private mode, etc.) — fall through
+    }
+    return "light";
+  }
+
+  function syncToggleState() {
+    const choice = readChoice();
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-theme-set]");
+    buttons.forEach((btn) => {
+      const value = btn.getAttribute("data-theme-set");
+      btn.setAttribute("aria-pressed", value === choice ? "true" : "false");
+    });
+  }
+
+  function applyChoice(choice: ThemeChoice) {
+    document.documentElement.dataset.theme = resolveTheme(choice);
+  }
+
+  document.querySelectorAll<HTMLButtonElement>("[data-theme-set]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const value = btn.getAttribute("data-theme-set") as ThemeChoice | null;
+      if (value !== "light" && value !== "dark" && value !== "system") return;
+      try {
+        localStorage.setItem("theme", value);
+      } catch {
+        // best effort; UI still updates for the current session
+      }
+      applyChoice(value);
+      syncToggleState();
+    });
+  });
+
+  syncToggleState();
+
+  // If user has "system" selected, react to live OS preference changes
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (readChoice() === "system") applyChoice("system");
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.15rem;
+    z-index: 50;
+    box-shadow: 0 1px 2px oklch(0 0 0 / 4%);
+  }
+
+  .theme-toggle button {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.65rem;
+    color: var(--color-muted-foreground);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    border-radius: 0.125rem;
+    font-feature-settings: "tnum", "zero";
+    transition:
+      background-color 200ms var(--ease-out-expo),
+      color 200ms var(--ease-out-expo);
+  }
+
+  .theme-toggle button:hover {
+    color: var(--color-foreground);
+  }
+
+  .theme-toggle button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .theme-toggle button[aria-pressed="true"] {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  @media print {
+    .theme-toggle {
+      display: none;
+    }
+  }
+
+  /* Mobile: dock to bottom-right so it doesn't cover the eyebrow */
+  @media (max-width: 480px) {
+    .theme-toggle {
+      top: auto;
+      bottom: 1rem;
+      right: 1rem;
+    }
+  }
+</style>
