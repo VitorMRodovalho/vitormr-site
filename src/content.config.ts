@@ -111,4 +111,34 @@ const powerbi = defineCollection({
   }),
 });
 
-export const collections = { experience, projects, powerbi };
+/**
+ * `caseStudies` — Tier 2 portfolio family of selected professional
+ * programs Vitor delivered. Pure-text card treatment (no client logos,
+ * no screenshots, no real artifact reproduction); content lifted from
+ * Vitor's AECOM-cleared resume so external-marketing-cleared. Optional
+ * inline ASCII data-flow diagram for cases where flow narrative helps
+ * comprehension (currently Trinus Databricks Lakehouse).
+ *
+ * Compliance posture: no Linesight (active NDA — sector-only on /about).
+ */
+const caseStudies = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/case-studies" }),
+  schema: z.object({
+    name: z.string(),
+    client: z.string(),
+    role: z.string(),
+    period: z.string(),
+    employer: z.string().optional(),
+    scopeHeadline: z.string(),
+    tagline: z.string(),
+    summary: z.string(),
+    context: z.string(),
+    roleNarrative: z.string(),
+    methodology: z.array(z.string()).default([]),
+    stack: z.array(z.string()).default([]),
+    inlineDiagram: z.string().optional(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { experience, projects, powerbi, caseStudies };
