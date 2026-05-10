@@ -1,0 +1,43 @@
+---
+name: "Construction Analytics Suite"
+tagline: "5 dashboards for portfolio management, procurement, and quality control"
+summary: >
+  Production Power BI analytics suite used in Brazilian real-estate
+  development (incorporadoras). Provides unified visibility across
+  construction portfolio health, procurement efficiency, quality control,
+  and cost benchmarking — anchored in real-estate-specific financial
+  indicators.
+dashboardCount: 5
+totalMeasures: 1209
+dashboards:
+  - name: "Portfolio Gestão Imobiliária"
+    measures: 758
+    focus: "Financial KPIs — TIR (IRR), VPL (NPV), VGV (Gross Sales), cash flow projections"
+  - name: "DVQ (Document Verification & Quality)"
+    measures: 184
+    focus: "Construction quality control, payment processes"
+  - name: "Dashboard Portfolio (Progress)"
+    measures: 152
+    focus: "Weighted physical-financial progress, ICP (Cost Performance Index)"
+  - name: "Builders Suprimentos (Procurement)"
+    measures: 82
+    focus: "OC/OS, CTR, REQ analysis with approval ranges"
+  - name: "Médias de Custos de Serviço"
+    measures: 33
+    focus: "Land-development cost averaging and estimation"
+highlights:
+  - "Real-estate financial indicators native: TIR / VPL / VGV / Margem"
+  - "Multi-format dynamic formatting in DAX via VAR + SWITCH(TRUE()) pattern"
+  - "Procurement analysis across 3 document types: OC/OS, CTR, REQ"
+  - "Weighted-average pattern using SUMX + KEEPFILTERS for construction progress metrics"
+  - "Physical-financial progress tracking with ICP (Cost Performance Index)"
+techStack:
+  - "Power BI"
+  - "SQL Server (UAU ERP)"
+  - "Azure Databricks"
+  - "SharePoint"
+  - "DAX"
+  - "Power Query M"
+repoUrl: "https://github.com/VitorMRodovalho/powerbi-construction-analytics"
+order: 2
+---

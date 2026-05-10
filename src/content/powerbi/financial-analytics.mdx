@@ -1,0 +1,38 @@
+---
+name: "Financial Analytics Suite"
+tagline: "4 dashboards + 1-master → 9-variants deployment pattern"
+summary: >
+  Production Power BI financial analytics suite for Brazilian real-estate
+  development and BPO financial operations — covering Controladoria
+  (Financial Controlling), Tesouraria (Treasury), and Cash Flow modeling.
+  Notable for an unusual 1-master-template → 9-specialized-variants
+  deployment pattern.
+dashboardCount: 4
+totalMeasures: 1357
+dashboards:
+  - name: "BI Controladoria (Master)"
+    measures: 594
+    focus: "Financial controlling — bank balances, payment processes, closing status, reconciliation, penalties"
+  - name: "BI Tesouraria"
+    measures: 576
+    focus: "Treasury management — mirrors Controladoria with treasury-specific payment emission and supplier tracking"
+  - name: "BI Fluxo Caixa (Cash Flow)"
+    measures: 186
+    focus: "Bank balances, entries, exits, transfers, quarterly variance, working capital"
+  - name: "BI Gestão de Tarefas"
+    measures: 1
+    focus: "Task and project tracking"
+highlights:
+  - "1-master to 9-variants pattern: one core Controladoria model deployed as 9+ specialized dashboards (Bancos Gerenciais, Conciliação, Contas Pagas, Fechamentos, Juros e Multa ×2, Suprimentos, Fechamento Gerencial, …)"
+  - "Semi-additive bank balance measures using LASTNONBLANK for point-in-time financial snapshots"
+  - "Complete cash flow model with entry/exit/transfer reconciliation and quarterly comparisons via DATEADD"
+  - "Connected to UAU-based ERP (SQL Server) with SharePoint reference data"
+techStack:
+  - "Power BI"
+  - "SQL Server (UAU ERP)"
+  - "SharePoint"
+  - "DAX"
+  - "Power Query M"
+repoUrl: "https://github.com/VitorMRodovalho/powerbi-financial-analytics"
+order: 3
+---
