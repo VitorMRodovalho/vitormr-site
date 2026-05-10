@@ -1,0 +1,47 @@
+---
+name: "Panorama"
+role: "Author"
+tagline: "One open-source platform for IT assets AND operational fleet"
+summary: >
+  Laptops, vehicles, licenses, equipment — in one pane. Multi-tenant
+  Postgres RLS, OIDC, hash-chained audit, trilingual EN/PT-BR/ES. AGPL-3.0
+  (fork-friendly) with Enterprise edition for SSO/SOC-2/white-label.
+problem: >
+  Organizations with both IT inventory and operational fleet stitch
+  together two systems — Snipe-IT (laptops, licenses) plus a custom
+  overlay like SnipeScheduler-FleetManager (vehicles, reservations,
+  inspections). That means two databases, two auth surfaces, two audit
+  trails, duplicate users, two upgrade paths, and a brittle HTTP boundary
+  between them.
+approach: >
+  Unified domain model that absorbs both feature sets — IT asset
+  management AND operational fleet — into a single data plane and admin
+  surface. Multi-tenant Postgres with RLS + GUC + FORCE RLS on every
+  tenant-scoped table. OIDC (Google + Microsoft Entra) plus email/password
+  argon2id plus Personal Access Tokens for Snipe-IT compatibility.
+  Hash-chained audit-event log. CSV importer + dedicated panorama-migrator
+  CLI for Snipe-IT API + SnipeScheduler-FleetManager MySQL → fixtures.
+  Three-edition model: Community (AGPL-3.0) / Enterprise (commercial) /
+  Cloud (managed SaaS).
+impact: >
+  Pre-alpha pilot prep. Three-wave QA/QC audit completed 2026-04-23
+  covering security, architecture, data, UX, ops, product strategy,
+  supply-chain, and AI/MCP exposure — 126 findings documented, 61 open as
+  labeled GitHub issues. Free hosted preview coming.
+license: "AGPL-3.0 + Enterprise commercial"
+status: "Pre-alpha · pilot prep"
+industry: "Asset + fleet management"
+techStack:
+  - "Next.js"
+  - "NestJS"
+  - "Postgres + Prisma + RLS"
+  - "Redis + BullMQ"
+  - "MinIO / S3"
+  - "OIDC (Google + Microsoft Entra)"
+  - "argon2id"
+  - "Pino structured logging"
+links:
+  live: "https://panorama.vitormr.dev"
+  repo: "https://github.com/VitorMRodovalho/panorama"
+order: 3
+---

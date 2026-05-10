@@ -1,0 +1,47 @@
+---
+name: "MeridianIQ"
+role: "Author"
+tagline: "The intelligence standard for project schedules"
+summary: >
+  Open-source schedule intelligence platform — from validation to prediction
+  to cost-schedule integration. Built for schedulers, project controls
+  professionals, and forensic delay analysts: transparent, auditable, free.
+problem: >
+  Schedule intelligence tools split into two camps: expensive enterprise
+  suites (Acumen Fuse, Primavera Risk Analysis) priced for owners and
+  contractors with budgets — and fragmented open-source utilities that
+  cover one analysis dimension at a time. Forensic delay analysis, EVM,
+  ML-based duration prediction, and standards-traceable validation in a
+  single transparent stack didn't exist.
+approach: >
+  Methodology library where every analysis engine traces back to a
+  published standard (AACE Recommended Practices, DCMA 14-Point Assessment,
+  SCL Delay & Disruption Protocol, GAO Schedule Assessment Guide). Layered:
+  XER + MS Project XML parsing → DCMA validation → CPM + float trends →
+  Time Impact Analysis → EVM + S-Curve → Monte Carlo QSRA → ML duration
+  prediction (RF + GB ensemble per Gondia 2021 / AbdElMottaleb 2025) →
+  Schedule Health Score → narrative reports. Custom hand-crafted SVG
+  Schedule Viewer (zero external chart deps).
+impact: >
+  v0.1.0 → v4.3.0 production releases. 48 analysis engines + 1 export
+  module. 22 Claude MCP tools (FastMCP). 1,679+ backend tests + Vitest +
+  Playwright E2E. 129 API endpoints across 25 routers. 55 SvelteKit
+  frontend pages. P6 XER round-trip write-back fidelity. $0/month infra
+  (Cloudflare + Supabase free tiers).
+license: "MIT"
+status: "v4.3.0 in production"
+industry: "Project controls"
+techStack:
+  - "Python 3.14"
+  - "FastAPI 0.135"
+  - "SvelteKit 2.56"
+  - "Vite 8"
+  - "Supabase Postgres"
+  - "FastMCP"
+  - "WeasyPrint"
+  - "NetworkX"
+links:
+  live: "https://meridianiq.vitormr.dev"
+  repo: "https://github.com/VitorMRodovalho/meridianiq"
+order: 2
+---

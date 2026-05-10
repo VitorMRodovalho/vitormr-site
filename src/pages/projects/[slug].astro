@@ -1,0 +1,136 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /projects/[slug]/ — per-project case-study detail page.
+ *
+ * Static-generated via getStaticPaths from the `projects` content
+ * collection. Format: hero (eyebrow + name + tagline + role pill +
+ * status) → summary → Problem · Approach · Impact (each as a section)
+ * → Stack chips → Links → footer nav.
+ */
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const data = project.data;
+
+const title = `${data.name}${data.nameAlt ? ` (${data.nameAlt})` : ""} · Vitor M. Rodovalho`;
+const description = data.summary;
+const buildDate = new Date().toISOString().slice(0, 10);
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-6">
+        <p class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+          <span class="text-primary">§</span>&nbsp;Project · <a href="/projects/" class="link-soft hover:text-foreground">/projects</a>/{project.id}
+        </p>
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-2">
+          <span class="role-pill">{data.role}</span>
+          <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+            {data.status}
+          </span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.04em] leading-[1.0]">
+          {data.name}<span class="text-primary">.</span>
+        </h1>
+        {data.nameAlt && (
+          <p class="text-lg italic text-muted-foreground">
+            <span class="text-foreground/80">{data.nameAlt}</span>
+          </p>
+        )}
+        <p class="text-lg sm:text-xl leading-snug font-medium">{data.tagline}</p>
+        <p class="text-[0.95rem] leading-relaxed text-muted-foreground">
+          {data.summary}
+        </p>
+        <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm pt-2">
+          {data.links?.live && (
+            <a href={data.links.live} class="link-soft hover:text-foreground" rel="noopener">
+              Live ↗
+            </a>
+          )}
+          {data.links?.repo && (
+            <a href={data.links.repo} class="link-soft hover:text-foreground" rel="noopener">
+              GitHub ↗
+            </a>
+          )}
+          {data.links?.docs && (
+            <a href={data.links.docs} class="link-soft hover:text-foreground" rel="noopener">
+              Docs ↗
+            </a>
+          )}
+          {data.license && (
+            <span class="text-xs text-muted-foreground/80 self-center">
+              · {data.license}
+            </span>
+          )}
+        </div>
+      </header>
+
+      <section class="space-y-3">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Problem</h2>
+          <span class="section-num tnum">01.</span>
+        </div>
+        <p class="text-[0.95rem] leading-relaxed">{data.problem}</p>
+      </section>
+
+      <section class="space-y-3">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Approach</h2>
+          <span class="section-num tnum">02.</span>
+        </div>
+        <p class="text-[0.95rem] leading-relaxed">{data.approach}</p>
+      </section>
+
+      <section class="space-y-3">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Impact</h2>
+          <span class="section-num tnum">03.</span>
+        </div>
+        <p class="text-[0.95rem] leading-relaxed">{data.impact}</p>
+      </section>
+
+      {data.techStack.length > 0 && (
+        <section class="space-y-4">
+          <div class="flex items-baseline justify-between border-b border-border pb-3">
+            <h2 class="text-xl font-bold tracking-tight">Stack</h2>
+            <span class="section-num tnum">04.</span>
+          </div>
+          <ul class="flex flex-wrap gap-x-2 gap-y-2">
+            {data.techStack.map((tech) => (
+              <li class="text-[0.7rem] uppercase tracking-[0.12em] px-2.5 py-1 border border-border rounded-sm font-mono">
+                {tech}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </main>
+
+  <footer class="px-6 sm:px-10 lg:px-16 py-12 border-t border-border mt-16">
+    <div class="max-w-3xl mx-auto space-y-4 text-center">
+      <nav class="flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs">
+        <a href="/projects/" class="link-soft hover:text-foreground">← All projects</a>
+        <a href="/" class="link-soft hover:text-foreground">Home</a>
+      </nav>
+      <p class="build-stamp tnum">
+        BUILD&nbsp;{buildDate}&nbsp;·&nbsp;ASTRO&nbsp;6.3&nbsp;·&nbsp;TAILWIND&nbsp;V4
+      </p>
+    </div>
+  </footer>
+</BaseLayout>

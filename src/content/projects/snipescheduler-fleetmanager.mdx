@@ -1,0 +1,48 @@
+---
+name: "SnipeScheduler-FleetManager"
+role: "Author"
+tagline: "Fleet vehicle management on top of Snipe-IT"
+summary: >
+  Comprehensive fleet vehicle management built as a Snipe-IT extension —
+  reservation scheduling, configurable inspections, maintenance tracking,
+  multi-entity partitioning, full compliance audit trail. Predecessor to
+  Panorama.
+problem: >
+  In large-scale infrastructure programs (AECOM B&P Tunnel context), teams
+  needed to manage IT equipment AND fleet vehicles on a single platform.
+  Snipe-IT excels at IT asset management but lacks reservation/scheduling
+  capabilities. Paper-based vehicle check-out processes were inefficient
+  and lacked governance. No single platform existed to handle both,
+  especially with multi-entity programs that need fleet partitioning
+  (each org sees only its vehicles).
+approach: >
+  Extend Snipe-IT API as the single source of truth for asset data — add
+  a user-friendly frontend specifically for fleet operations. Reservation
+  scheduling with approval workflow. Configurable vehicle inspection
+  (Quick 4-cat / Full 50-item / Off). Photo upload during checkout/checkin.
+  Multi-entity partitioning with auto-detect (company-based filtering).
+  Email + Microsoft Teams notifications resolved dynamically from
+  Snipe-IT group membership. Training expiration tracking with weekly
+  CRON alerts. API resilience via exponential backoff retry on 429/5xx
+  responses.
+impact: >
+  v2.1.0 production. Mobile-friendly with QR code scanning. Full audit
+  trail. CRON health monitoring with sync-staleness detection +
+  configurable alert thresholds. Startup validation script that verifies
+  required Snipe-IT groups, statuses, fields, and API connectivity.
+  Direct precursor to Panorama (which unifies the two-system architecture
+  into one data plane).
+license: "GPL-3.0"
+status: "v2.1.0 in production"
+industry: "Fleet management"
+techStack:
+  - "PHP"
+  - "Snipe-IT API"
+  - "Chart.js"
+  - "Microsoft Teams webhooks"
+  - "OAuth"
+  - "MySQL (via Snipe-IT)"
+links:
+  repo: "https://github.com/VitorMRodovalho/SnipeScheduler-FleetManager"
+order: 4
+---
