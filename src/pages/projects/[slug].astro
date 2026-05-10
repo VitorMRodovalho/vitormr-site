@@ -29,9 +29,33 @@ const data = project.data;
 
 const title = `${data.name}${data.nameAlt ? ` (${data.nameAlt})` : ""} · Vitor M. Rodovalho`;
 const description = data.summary;
+
+// Schema.org SoftwareApplication for code-bearing project pages.
+// Knowledge Graph entity-resolves via shared author URL with the
+// BaseLayout default Person.
+const projectSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: data.name,
+  description: data.summary,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+};
+if (data.nameAlt) projectSchema.alternateName = data.nameAlt;
+if (data.links?.live) projectSchema.url = data.links.live;
+if (data.links?.repo) projectSchema.codeRepository = data.links.repo;
+if (data.license) projectSchema.license = data.license;
+if (data.techStack && data.techStack.length > 0) {
+  projectSchema.keywords = data.techStack.join(", ");
+}
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} schemaJsonLd={projectSchema}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto space-y-16">
       <header class="space-y-6">

@@ -44,9 +44,28 @@ const families = [
 const title = "Portfolio · Vitor M. Rodovalho";
 const description =
   "Tier 2 anonymized professional artifacts — Power BI suites, knowledge patterns, and data-engineering scaffolds extracted from production work in Brazilian real-estate development and BPO operations. All MIT, all anonymized.";
+
+const portfolioHubSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Portfolio",
+  description,
+  url: "https://vitormr.dev/portfolio/",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  hasPart: families.map((f) => ({
+    "@type": "CollectionPage",
+    name: `${f.name} portfolio family`,
+    description: f.tagline,
+    url: `https://vitormr.dev${f.href}/`,
+  })),
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} schemaJsonLd={portfolioHubSchema}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto space-y-16">
       <header class="space-y-5">
