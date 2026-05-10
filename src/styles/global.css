@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap");
+
+/* Note: Google Fonts loaded via <link> tags in src/layouts/BaseLayout.astro
+ * because Tailwind v4 + Vite strips CSS @import url() during bundling
+ * (verified 2026-05-09 V02.5 deploy: tokens compiled but fonts never fetched). */
 
 /**
  * Mono-forward design system for vitormr.dev — V02.5 design pass per
