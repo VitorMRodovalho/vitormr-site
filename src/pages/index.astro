@@ -19,24 +19,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * into /about per council product-leader guidance to preserve dossier
  * density without overloading the Hero.
  *
- * Featured projects: 4 cards — AI & PM Research Hub (Founder), MeridianIQ
- * (Author), Panorama (Author), Orenu (Founder). Naming convention:
+ * Featured projects: 4 cards — AI & PM Research Hub (Co-founder; platform
+ * and framework author), MeridianIQ (Author), Panorama (Author), Orenu
+ * (Founder — solo). Role taxonomy distinguishes collective initiatives
+ * (Co-founder) from sole-founder solo work (Founder). Naming convention:
  * English-primary with PT name in parens.
  */
 
 const title = "Vitor M. Rodovalho";
 const description =
-  "Senior Cost Manager at Linesight · hyperscale data center delivery · founder of the AI & PM Research Hub at PMI Brazil · open-source builder of MeridianIQ + Panorama. 15+ years across U.S. and Brazil.";
+  "Senior Cost Manager at Linesight · hyperscale data center delivery · co-founder of the AI & PM Research Hub at PMI Brazil and author of its open-source platform · open-source builder of MeridianIQ + Panorama. 15+ years across U.S. and Brazil.";
 
 const featured = [
   {
     slug: "nucleo-ia-gp",
     name: "AI & PM Research Hub",
     nameAlt: "Núcleo IA & GP",
-    role: "Founder",
+    role: "Co-founder",
     tagline: "Voluntary inter-chapter PMI® Brazil research initiative on AI ⨯ Project Management",
     blurb:
-      "Anchored by an open-source platform that binds the management framework, structures procedural and information flow, and gamifies the volunteer journey — where AI is both research subject and operational substrate. 50+ volunteers across federated Brazilian chapters in research streams and operational workgroups. Multi-tenant: governance chains, LGPD-by-design, trilingual UX (EN · PT · ES), MCP-based AI integration with Drive · GitHub · Canva · Credly · PMI VEP · Calendar · WhatsApp. Designed so any PMI chapter globally can adopt the operational model. Founded 2024 as a PMI Goiás pilot. Inter-institutional collaborations welcome.",
+      "Anchored by an open-source platform that binds the management framework, structures procedural and information flow, and gamifies the volunteer journey — where AI is both research subject and operational substrate. 50+ volunteers across federated Brazilian chapters in research streams and operational workgroups. Multi-tenant: governance chains, LGPD-by-design, trilingual UX (EN · PT · ES), MCP-based AI integration with Drive · GitHub · Canva · Credly · PMI VEP · Calendar · WhatsApp. Designed so any PMI chapter globally can adopt the operational model. Co-founded 2024 as a PMI Goiás pilot; the open-source platform and the management framework are authored and documented by Vitor. Inter-institutional collaborations welcome.",
     href: "https://nucleoia.vitormr.dev",
   },
   {
@@ -80,7 +82,7 @@ const featured = [
           <p
             class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground anim-fade-up anim-d-1"
           >
-            <span class="text-primary">§</span>&nbsp;Senior Cost Manager · Open-source builder · Researcher
+            <span class="text-primary">§</span>&nbsp;Senior Cost Manager · Hyperscale Data Centers · Open-source builder
           </p>
 
           <h1
@@ -93,6 +95,34 @@ const featured = [
             Building cost intelligence for the&nbsp;<span class="link-soft">AI&#8209;infrastructure economy</span>.
           </p>
 
+          <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm pt-1 anim-fade-up anim-d-3">
+            <li class="flex items-baseline gap-1.5">
+              <span class="text-primary font-bold tnum">15+</span>
+              <span class="text-muted-foreground">years</span>
+            </li>
+            <li class="flex items-baseline gap-1.5" aria-hidden="true">
+              <span class="text-border-strong">·</span>
+            </li>
+            <li class="flex items-baseline gap-1.5">
+              <span class="text-primary font-bold tnum">$6.7B+</span>
+              <span class="text-muted-foreground">program scope</span>
+            </li>
+            <li class="flex items-baseline gap-1.5" aria-hidden="true">
+              <span class="text-border-strong">·</span>
+            </li>
+            <li class="flex items-baseline gap-1.5">
+              <span class="text-primary font-bold tnum">1,300+</span>
+              <span class="text-muted-foreground">units delivered</span>
+            </li>
+            <li class="flex items-baseline gap-1.5" aria-hidden="true">
+              <span class="text-border-strong">·</span>
+            </li>
+            <li class="flex items-baseline gap-1.5">
+              <span class="text-primary font-bold tnum">6,151</span>
+              <span class="text-muted-foreground">DAX measures</span>
+            </li>
+          </ul>
+
           <div
             class="space-y-4 text-[0.95rem] leading-relaxed text-muted-foreground anim-fade-up anim-d-4"
           >
@@ -101,9 +131,9 @@ const featured = [
               hyperscale data&#8209;center delivery. 15+ years across capital programs in the U.S.
               and Brazil — from <span class="tnum">$6.7B</span> Northeast Corridor rail (Amtrak / B&amp;P
               Tunnel) at AECOM, to <span class="tnum">$1B</span> higher&#8209;education bond programs,
-              to <span class="tnum">1,300+</span> residential units delivered. Founder of the
+              to <span class="tnum">1,300+</span> residential units delivered. Co&#8209;founder of the
               <strong class="text-foreground">AI &amp; PM Research Hub</strong> at PMI Brazil —
-              an inter&#8209;chapter initiative on AI ⨯ Project Management with <span class="tnum">50+</span> volunteers across federated Brazilian chapters.
+              a voluntary inter&#8209;chapter initiative on AI ⨯ Project Management with <span class="tnum">50+</span> volunteers across federated Brazilian chapters; author of its open&#8209;source platform and governance framework.
             </p>
           </div>
 
