@@ -1,0 +1,240 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import SiteFooter from "../../components/SiteFooter.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /writing/[slug] — long-form essay detail page.
+ *
+ * Static-generated via getStaticPaths from the `writing` content
+ * collection. Renders the MDX body inside a prose container with
+ * mono-forward design language and amber accents preserved.
+ *
+ * Schema.org BlogPosting on the detail page; Knowledge Graph
+ * entity-resolves with the BaseLayout default Person via author URL.
+ */
+
+export async function getStaticPaths() {
+  const writing = await getCollection("writing");
+  return writing
+    .filter((w) => w.data.status !== "draft")
+    .map((entry) => ({
+      params: { slug: entry.id },
+      props: { entry },
+    }));
+}
+
+interface Props {
+  entry: CollectionEntry<"writing">;
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content } = await render(entry);
+
+const title = `${data.title} · Vitor M. Rodovalho`;
+const description = data.description;
+
+function fmtDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+const blogPostingSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: data.title,
+  ...(data.subtitle ? { alternativeHeadline: data.subtitle } : {}),
+  description: data.description,
+  url: `https://vitormr.dev/writing/${entry.id}/`,
+  datePublished: data.publishedAt,
+  ...(data.updatedAt ? { dateModified: data.updatedAt } : {}),
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  publisher: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  keywords: data.tags.join(", "),
+  inLanguage: "en-US",
+  mainEntityOfPage: `https://vitormr.dev/writing/${entry.id}/`,
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schemaJsonLd={blogPostingSchema}
+>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <article class="max-w-2xl mx-auto space-y-12">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;<a
+            href="/writing"
+            class="link-soft hover:text-foreground">Writing</a
+          >
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.1]"
+        >
+          {data.title}
+          <span class="text-primary">.</span>
+        </h1>
+        {
+          data.subtitle && (
+            <p class="text-lg sm:text-xl text-muted-foreground italic leading-snug">
+              {data.subtitle}
+            </p>
+          )
+        }
+        <div
+          class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground pt-2"
+        >
+          <span class="tnum">{fmtDate(data.publishedAt)}</span>
+          <span>·</span>
+          <span class="tnum">{data.estimatedReadMinutes} min read</span>
+          {
+            data.revision && (
+              <>
+                <span>·</span>
+                <span class="italic">{data.revision}</span>
+              </>
+            )
+          }
+        </div>
+      </header>
+
+      <section class="prose-essay space-y-5 text-[1rem] leading-relaxed">
+        <Content />
+      </section>
+
+      {
+        data.tags.length > 0 && (
+          <footer class="pt-6 border-t border-border/60 space-y-4">
+            <div class="flex flex-wrap gap-x-2 gap-y-2">
+              {data.tags.map((t) => (
+                <span class="text-[0.65rem] uppercase tracking-[0.12em] px-2 py-0.5 border border-border rounded-sm font-mono text-muted-foreground">
+                  {t}
+                </span>
+              ))}
+            </div>
+            <p class="text-xs text-muted-foreground italic leading-relaxed">
+              Living document. If something is wrong or contestable,{" "}
+              <a
+                href="mailto:vitor@vitormr.dev"
+                class="link-soft hover:text-foreground"
+              >
+                email me
+              </a>
+              .
+            </p>
+          </footer>
+        )
+      }
+    </article>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style is:global>
+  .prose-essay h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  .prose-essay h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose-essay p {
+    margin-bottom: 1.25rem;
+  }
+  .prose-essay strong {
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+  .prose-essay em {
+    color: var(--color-foreground);
+  }
+  .prose-essay a {
+    background-image: linear-gradient(
+      transparent 60%,
+      var(--color-primary) 60%,
+      var(--color-primary) 90%,
+      transparent 90%
+    );
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    transition:
+      background-size 280ms var(--ease-out-expo),
+      color 240ms var(--ease-out-expo);
+  }
+  .prose-essay a:hover,
+  .prose-essay a:focus-visible {
+    background-size: 100% 100%;
+    color: var(--color-foreground);
+    outline: none;
+  }
+  .prose-essay ul,
+  .prose-essay ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .prose-essay ul {
+    list-style: disc;
+  }
+  .prose-essay ol {
+    list-style: decimal;
+  }
+  .prose-essay ul li::marker {
+    color: var(--color-primary);
+  }
+  .prose-essay ol li::marker {
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum", "zero";
+  }
+  .prose-essay li {
+    margin-bottom: 0.5rem;
+  }
+  .prose-essay hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 3rem 0 2rem;
+  }
+  .prose-essay code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-muted);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.2rem;
+  }
+  .prose-essay blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1rem;
+    color: var(--color-muted-foreground);
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+</style>
