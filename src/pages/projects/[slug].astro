@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import SiteFooter from "../../components/SiteFooter.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 /**
@@ -28,7 +29,6 @@ const data = project.data;
 
 const title = `${data.name}${data.nameAlt ? ` (${data.nameAlt})` : ""} · Vitor M. Rodovalho`;
 const description = data.summary;
-const buildDate = new Date().toISOString().slice(0, 10);
 ---
 
 <BaseLayout title={title} description={description}>
@@ -122,15 +122,5 @@ const buildDate = new Date().toISOString().slice(0, 10);
     </div>
   </main>
 
-  <footer class="px-6 sm:px-10 lg:px-16 py-12 border-t border-border mt-16">
-    <div class="max-w-3xl mx-auto space-y-4 text-center">
-      <nav class="flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs">
-        <a href="/projects/" class="link-soft hover:text-foreground">← All projects</a>
-        <a href="/" class="link-soft hover:text-foreground">Home</a>
-      </nav>
-      <p class="build-stamp tnum">
-        BUILD&nbsp;{buildDate}&nbsp;·&nbsp;ASTRO&nbsp;6.3&nbsp;·&nbsp;TAILWIND&nbsp;V4
-      </p>
-    </div>
-  </footer>
+  <SiteFooter />
 </BaseLayout>

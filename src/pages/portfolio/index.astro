@@ -1,0 +1,117 @@
+---
+import { getCollection } from "astro:content";
+import SiteFooter from "../../components/SiteFooter.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /portfolio/ — Tier 2 anonymized professional artifacts hub.
+ * Currently a single family (Power BI); the route layout supports
+ * future families (DAX patterns, P6 utilities, Databricks notebooks)
+ * without further structural change.
+ *
+ * Distinct from /projects (open-source builds Vitor authored / founded).
+ * Portfolio = anonymized client-context artifacts; Projects = first-party
+ * open-source. Council 2026-05-10 endorsed the split for audience-fit
+ * (USCIS counsel + recruiters value the differentiation).
+ */
+
+const allPowerBiSuites = await getCollection("powerbi");
+const totalPowerBiMeasures = allPowerBiSuites.reduce(
+  (acc, s) => acc + s.data.totalMeasures,
+  0,
+);
+const totalPowerBiDashboards = allPowerBiSuites.reduce(
+  (acc, s) => acc + s.data.dashboardCount,
+  0,
+);
+
+const families = [
+  {
+    slug: "power-bi",
+    href: "/portfolio/power-bi",
+    name: "Power BI",
+    tagline: "Anonymized production analytics for Brazilian real-estate development + BPO operations",
+    stats: [
+      { label: "Suites", value: allPowerBiSuites.length },
+      { label: "Dashboards", value: totalPowerBiDashboards },
+      { label: "DAX measures", value: totalPowerBiMeasures.toLocaleString("en-US") },
+    ],
+    blurb:
+      "Knowledge artifacts (DAX, Power Query M, data-model schemas, relationships) extracted from production .pbix used in Brazilian real-estate development and BPO financial operations. The original .pbix files are not in the public repos; the patterns and techniques are.",
+  },
+];
+
+const title = "Portfolio · Vitor M. Rodovalho";
+const description =
+  "Tier 2 anonymized professional artifacts — Power BI suites, knowledge patterns, and data-engineering scaffolds extracted from production work in Brazilian real-estate development and BPO operations. All MIT, all anonymized.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;Portfolio
+        </p>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]">
+          Anonymized professional artifacts<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Knowledge extracted from production work — patterns, schemas,
+          DAX, M, and data-model decisions — published anonymized so the
+          techniques outlive the engagement. Distinct from
+          <a href="/projects" class="link-soft hover:text-foreground">/projects</a>,
+          which collects first-party open-source builds.
+        </p>
+      </header>
+
+      <section class="space-y-12">
+        {
+          families.map((family, i) => (
+            <article class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+              <span class="section-num tnum pt-1">
+                {String(i + 1).padStart(2, "0")}.
+              </span>
+              <div class="space-y-3 min-w-0">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+                  <span class="role-pill">MIT</span>
+                  <a
+                    href={family.href}
+                    class="text-xl sm:text-2xl font-bold tracking-tight link-soft"
+                  >
+                    {family.name}
+                  </a>
+                </div>
+                <p class="text-sm font-medium text-muted-foreground">
+                  {family.tagline}
+                </p>
+                <dl class="grid grid-cols-3 gap-4 max-w-md pt-1">
+                  {family.stats.map((stat) => (
+                    <div>
+                      <dt class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+                        {stat.label}
+                      </dt>
+                      <dd class="text-xl font-bold tracking-tight tnum mt-0.5">
+                        {stat.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <p class="text-[0.95rem] leading-relaxed">{family.blurb}</p>
+                <p class="text-xs pt-1">
+                  <a href={family.href} class="link-soft hover:text-foreground">
+                    Browse {family.name} suites →
+                  </a>
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
