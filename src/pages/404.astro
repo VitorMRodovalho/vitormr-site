@@ -6,19 +6,21 @@ const description = "The page you were looking for could not be found.";
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 flex items-center justify-center px-4 py-16 md:py-24">
+  <main class="flex-1 flex items-center justify-center px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-md space-y-6 text-center">
-      <p class="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        Error 404
+      <p
+        class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground tnum"
+      >
+        <span class="text-primary">§</span>&nbsp;Error&nbsp;404
       </p>
-      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
-        Page not found
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-[-0.04em] leading-[1.05]">
+        Page not found<span class="text-primary">.</span>
       </h1>
-      <p class="text-base text-muted-foreground">
+      <p class="text-base text-muted-foreground leading-relaxed">
         The page you were looking for doesn't exist or has moved.
       </p>
       <nav class="pt-4 flex justify-center text-sm">
-        <a href="/" class="underline hover:text-foreground">← Home</a>
+        <a href="/" class="link-soft hover:text-foreground">← Home</a>
       </nav>
     </div>
   </main>
