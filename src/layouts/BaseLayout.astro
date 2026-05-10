@@ -27,6 +27,30 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
 
+    <!-- Theme bootstrap (V06): blocking script that resolves localStorage
+         into an explicit data-theme attr on <html> BEFORE first paint.
+         Prevents FOUC; single source of truth so CSS uses [data-theme="dark"]
+         selector (no @media branch). Default is LIGHT — system preference is
+         only honored when user explicitly opts into "system" via the toggle
+         island (V06b). Until V06b lands, dark is reachable by setting
+         localStorage.theme = "dark" manually. -->
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem("theme");
+          let resolved = "light";
+          if (saved === "dark" || saved === "light") {
+            resolved = saved;
+          } else if (saved === "system") {
+            resolved = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          document.documentElement.dataset.theme = resolved;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+
     <!-- Google Fonts — JetBrains Mono (display/chrome/mono) + Atkinson
          Hyperlegible (body sans). Loaded via <link> tags rather than
          CSS @import because Tailwind v4 + Vite strips @import url()
