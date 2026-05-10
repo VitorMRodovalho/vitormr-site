@@ -36,4 +36,43 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { experience };
+/**
+ * `projects` — Tier-1 case studies for the /projects hub + per-project pages.
+ *
+ * Schema design notes:
+ *  - One-pager case study format: problem → approach → impact → stack → links
+ *  - `role` constrained to the badge taxonomy (Founder / Author / Maintainer /
+ *    Contributor) so the role-pill class renders consistently
+ *  - `status` is free text (e.g., "v4.3.0 in production", "Pre-alpha · pilot
+ *    prep", "Private platform · invite-only beta planned")
+ *  - `links.live` is the live deployment URL; `links.repo` the GitHub repo
+ *  - `nameAlt` is the secondary-language name (e.g., "Núcleo IA & GP" for
+ *    the EN-primary "AI & PM Research Hub")
+ */
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
+  schema: z.object({
+    name: z.string(),
+    nameAlt: z.string().optional(),
+    role: z.enum(["Founder", "Author", "Maintainer", "Contributor"]),
+    tagline: z.string(),
+    summary: z.string(),
+    problem: z.string(),
+    approach: z.string(),
+    impact: z.string(),
+    license: z.string().optional(),
+    status: z.string(),
+    techStack: z.array(z.string()).default([]),
+    industry: z.string().optional(),
+    links: z
+      .object({
+        live: z.url().optional(),
+        repo: z.url().optional(),
+        docs: z.url().optional(),
+      })
+      .optional(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { experience, projects };
