@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Pre-commit hook — runs PII scan on staged files.
+# Install: `pnpm install` triggers `prepare` script which runs `husky`,
+# setting `core.hooksPath = .husky/_`. Husky v9 simplified — no
+# `husky.sh` source needed; just plain shell.
+
+bash scripts/pii-scan.sh
