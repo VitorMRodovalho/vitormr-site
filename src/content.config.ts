@@ -75,4 +75,38 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { experience, projects };
+/**
+ * `powerbi` — Tier 2 catalog of anonymized Power BI artifacts (4 suites,
+ * ~6,151 DAX measures across Brazilian real-estate development +
+ * construction + BPO operations). All MIT, all anonymized — knowledge
+ * artifacts (DAX, M, schemas, relationships), NOT runnable .pbix.
+ *
+ * Schema notes:
+ *  - `dashboards` is an ordered list of objects (name + measures + focus)
+ *  - `totalMeasures` denormalized for hub page sorting/display
+ *  - `highlights` are bullet impact statements (e.g., "1-master to
+ *    9-variants pattern", "SVG gauge in DAX")
+ */
+const powerbi = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/powerbi" }),
+  schema: z.object({
+    name: z.string(),
+    tagline: z.string(),
+    summary: z.string(),
+    dashboardCount: z.number().int().min(1),
+    totalMeasures: z.number().int().min(1),
+    dashboards: z.array(
+      z.object({
+        name: z.string(),
+        measures: z.number().int().min(0),
+        focus: z.string(),
+      }),
+    ),
+    highlights: z.array(z.string()).default([]),
+    techStack: z.array(z.string()).default([]),
+    repoUrl: z.url(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { experience, projects, powerbi };
