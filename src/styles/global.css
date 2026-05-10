@@ -17,7 +17,10 @@
  *  - Hi-vis safety amber as sole signature accent — link underlines, section
  *    numbers, role badges, build stamps. Everything else neutral grayscale
  *    so the amber genuinely impacts.
- *  - Light mode default; @media dark override.
+ *  - Light mode default; [data-theme="dark"] explicit override (V06: theme
+ *    swap is now driven by an inline pre-paint script in BaseLayout that
+ *    resolves system preference + localStorage into an explicit data-theme
+ *    attr on <html>; manual override via ThemeToggle in V06b).
  *  - CSS-only motion (staggered fadeUp on first paint, prefers-reduced-motion
  *    guarded). Zero-JS by default per Astro Islands invariant.
  *
@@ -53,23 +56,21 @@
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: oklch(0.14 0.001 90);
-    --color-foreground: oklch(0.97 0.001 90);
+:root[data-theme="dark"] {
+  --color-background: oklch(0.14 0.001 90);
+  --color-foreground: oklch(0.97 0.001 90);
 
-    --color-muted: oklch(0.22 0.001 90);
-    --color-muted-foreground: oklch(0.65 0.005 90);
+  --color-muted: oklch(0.22 0.001 90);
+  --color-muted-foreground: oklch(0.65 0.005 90);
 
-    --color-primary: oklch(0.85 0.17 80);
-    --color-primary-foreground: oklch(0.14 0.001 90);
+  --color-primary: oklch(0.85 0.17 80);
+  --color-primary-foreground: oklch(0.14 0.001 90);
 
-    --color-accent: oklch(0.97 0.001 90);
-    --color-accent-foreground: oklch(0.14 0.001 90);
+  --color-accent: oklch(0.97 0.001 90);
+  --color-accent-foreground: oklch(0.14 0.001 90);
 
-    --color-border: oklch(0.28 0.005 90);
-    --color-border-strong: oklch(0.45 0.005 90);
-  }
+  --color-border: oklch(0.28 0.005 90);
+  --color-border-strong: oklch(0.45 0.005 90);
 }
 
 body {

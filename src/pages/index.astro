@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import headshot from "../assets/vitor-headshot.jpg";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
@@ -8,6 +10,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
  * V02.5 design pass per frontend-design skill output 2026-05-09 (council-
  * guardrailed). Mono-forward print-engineering aesthetic with hi-vis amber
  * signature. Section numbers as anchors. Staggered fadeUp on first paint.
+ *
+ * V06a (2026-05-10): Hero photo added (right-aligned circular ~240px,
+ * quiet treatment per council ux-principal recommendation — pure circle,
+ * no amber ring, lets amber stay typographic). Bio trimmed from 2 paragraphs
+ * to 1; the second paragraph (PMP/Civil Eng/MBA-FGV/Linux 2006) was lifted
+ * into /about per council product-leader guidance to preserve dossier
+ * density without overloading the Hero.
  *
  * Featured projects: 4 cards — AI & PM Research Hub (Founder), MeridianIQ
  * (Author), Panorama (Author), Orenu (Founder). Naming convention:
@@ -64,57 +73,69 @@ const buildDate = new Date().toISOString().slice(0, 10);
 <BaseLayout title={title} description={description}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto">
-      <header class="space-y-7">
-        <p
-          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground anim-fade-up anim-d-1"
-        >
-          <span class="text-primary">§</span>&nbsp;Senior Cost Manager · Open-source builder · Researcher
-        </p>
-
-        <h1
-          class="text-[2.6rem] sm:text-6xl md:text-7xl font-bold tracking-[-0.04em] leading-[0.95] anim-fade-up anim-d-2"
-        >
-          Vitor M.<br />Rodovalho<span class="text-primary">.</span>
-        </h1>
-
-        <p class="text-lg sm:text-xl leading-snug font-medium anim-fade-up anim-d-3">
-          Building cost intelligence for the&nbsp;<span class="link-soft">AI&#8209;infrastructure economy</span>.
-        </p>
-
-        <div
-          class="space-y-4 text-[0.95rem] leading-relaxed text-muted-foreground anim-fade-up anim-d-4"
-        >
-          <p>
-            Senior Cost Manager at <strong class="text-foreground">Linesight</strong>, supporting
-            hyperscale data&#8209;center delivery. 15+ years across capital programs in the U.S.
-            and Brazil — from <span class="tnum">$6.7B</span> Northeast Corridor rail (Amtrak / B&amp;P
-            Tunnel) at AECOM, to <span class="tnum">$1B</span> higher&#8209;education bond programs,
-            to <span class="tnum">1,300+</span> residential units delivered. Founder of the
-            <strong class="text-foreground">AI &amp; PM Research Hub</strong> at PMI Brazil —
-            an inter&#8209;chapter initiative on AI ⨯ Project Management with <span class="tnum">50+</span> volunteers across federated Brazilian chapters.
+      <header
+        class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] md:gap-x-12 lg:gap-x-16 gap-y-10 items-start"
+      >
+        <div class="space-y-7 order-2 md:order-1 min-w-0">
+          <p
+            class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground anim-fade-up anim-d-1"
+          >
+            <span class="text-primary">§</span>&nbsp;Senior Cost Manager · Open-source builder · Researcher
           </p>
-          <p class="text-sm">
-            Almost everything I build is open&#8209;source. PMP® · Civil Engineer (Brazil) ·
-            MBA&#8209;FGV · Linux user since 2006.
+
+          <h1
+            class="text-[2.6rem] sm:text-6xl md:text-[5.25rem] lg:text-[5.75rem] font-bold tracking-[-0.04em] leading-[0.95] anim-fade-up anim-d-2"
+          >
+            Vitor M.<br />Rodovalho<span class="text-primary">.</span>
+          </h1>
+
+          <p class="text-lg sm:text-xl leading-snug font-medium anim-fade-up anim-d-3">
+            Building cost intelligence for the&nbsp;<span class="link-soft">AI&#8209;infrastructure economy</span>.
           </p>
+
+          <div
+            class="space-y-4 text-[0.95rem] leading-relaxed text-muted-foreground anim-fade-up anim-d-4"
+          >
+            <p>
+              Senior Cost Manager at <strong class="text-foreground">Linesight</strong>, supporting
+              hyperscale data&#8209;center delivery. 15+ years across capital programs in the U.S.
+              and Brazil — from <span class="tnum">$6.7B</span> Northeast Corridor rail (Amtrak / B&amp;P
+              Tunnel) at AECOM, to <span class="tnum">$1B</span> higher&#8209;education bond programs,
+              to <span class="tnum">1,300+</span> residential units delivered. Founder of the
+              <strong class="text-foreground">AI &amp; PM Research Hub</strong> at PMI Brazil —
+              an inter&#8209;chapter initiative on AI ⨯ Project Management with <span class="tnum">50+</span> volunteers across federated Brazilian chapters.
+            </p>
+          </div>
+
+          <nav class="pt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm anim-fade-up anim-d-5">
+            <a href="/about" class="link-soft hover:text-foreground">About</a>
+            <a href="/experience" class="link-soft hover:text-foreground">Experience</a>
+            <a href="/projects" class="link-soft hover:text-foreground">Projects</a>
+            <a
+              href="https://www.linkedin.com/in/vitor-rodovalho-pmp"
+              class="link-soft hover:text-foreground"
+              rel="noopener">LinkedIn</a
+            >
+            <a
+              href="https://github.com/VitorMRodovalho"
+              class="link-soft hover:text-foreground"
+              rel="noopener">GitHub</a
+            >
+            <a href="mailto:vitor@vitormr.dev" class="link-soft hover:text-foreground">Email</a>
+          </nav>
         </div>
 
-        <nav class="pt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm anim-fade-up anim-d-5">
-          <a href="/about" class="link-soft hover:text-foreground">About</a>
-          <a href="/experience" class="link-soft hover:text-foreground">Experience</a>
-          <a href="/projects" class="link-soft hover:text-foreground">Projects</a>
-          <a
-            href="https://www.linkedin.com/in/vitor-rodovalho-pmp"
-            class="link-soft hover:text-foreground"
-            rel="noopener">LinkedIn</a
-          >
-          <a
-            href="https://github.com/VitorMRodovalho"
-            class="link-soft hover:text-foreground"
-            rel="noopener">GitHub</a
-          >
-          <a href="mailto:vitor@vitormr.dev" class="link-soft hover:text-foreground">Email</a>
-        </nav>
+        <div class="order-1 md:order-2 anim-fade-up anim-d-2 md:pt-2">
+          <Image
+            src={headshot}
+            alt="Portrait of Vitor M. Rodovalho"
+            widths={[200, 240, 480]}
+            sizes="(min-width: 768px) 240px, 200px"
+            class="rounded-full w-[200px] md:w-[240px] aspect-square object-cover bg-muted"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
       </header>
 
       <section class="mt-24 sm:mt-32 space-y-10 anim-fade-up anim-d-6">
