@@ -1,0 +1,188 @@
+---
+import { getCollection } from "astro:content";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+/**
+ * /portfolio/case-studies/ — Tier 2 portfolio family of selected
+ * professional programs Vitor delivered. Pure-text card treatment per
+ * council 2026-05-10 guidance: no client logos, no screenshots, no
+ * artifact reproduction. Content lifted from AECOM-cleared 2025-10-22
+ * resume + Trinus-period work; Linesight is intentionally out of scope
+ * (active NDA — sector-only on /about).
+ *
+ * Inline ASCII data-flow diagram is included only on cases where flow
+ * narrative meaningfully helps comprehension (currently Trinus
+ * Databricks Lakehouse).
+ */
+
+const allCaseStudies = await getCollection("caseStudies");
+const caseStudies = allCaseStudies.sort((a, b) => a.data.order - b.data.order);
+
+const title = "Case studies · Portfolio · Vitor M. Rodovalho";
+const description =
+  "Selected case studies from 15+ years of capital-program delivery — Amtrak Frederick Douglass Tunnel ($6.7B), Peralta College Bond ($1B), Trinus Databricks Lakehouse, EMISA 700-unit Avenida Parque, Direcional R$89M procurement, Anglo American Barro Alto Nickel Mine ($1.9B), and Cipasa & Nova Colorado M&A turnaround. Pure-text — no client artifact reproduction.";
+
+const portfolioCaseStudiesSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Case Studies",
+  description,
+  url: "https://vitormr.dev/portfolio/case-studies/",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  hasPart: caseStudies.map((c) => ({
+    "@type": "CreativeWork",
+    name: c.data.name,
+    description: c.data.summary,
+    genre: "Case Study",
+    keywords: c.data.stack.join(", "),
+    author: {
+      "@type": "Person",
+      name: "Vitor Maia Rodovalho",
+      url: "https://vitormr.dev",
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schemaJsonLd={portfolioCaseStudiesSchema}
+>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;<a
+            href="/portfolio"
+            class="link-soft hover:text-foreground">Portfolio</a
+          >&nbsp;·&nbsp;Case studies
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Selected programs<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Seven case studies from 15+ years of capital-program delivery in the
+          U.S. and Brazil — federal rail, higher-education bond, real-estate
+          investment data integration, multifamily residential, regional
+          procurement, mining, and post-acquisition M&amp;A turnaround. Pure
+          text by design (no client logos, no screenshots, no artifact
+          reproduction). Linesight (current employer) is sector-only on
+          <a href="/about" class="link-soft hover:text-foreground">/about</a>.
+        </p>
+      </header>
+
+      <section class="space-y-14">
+        {
+          caseStudies.map((c, i) => (
+            <article
+              class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8 border-b border-border/60 pb-14 last:border-b-0 last:pb-0"
+            >
+              <span class="section-num tnum pt-1">
+                {String(i + 1).padStart(2, "0")}.
+              </span>
+              <div class="space-y-5 min-w-0">
+                <div class="space-y-2">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+                    <span class="role-pill">{c.data.role}</span>
+                    <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground tnum">
+                      {c.data.period}
+                    </span>
+                    {c.data.employer && (
+                      <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                        @ {c.data.employer}
+                      </span>
+                    )}
+                  </div>
+                  <h2 class="text-xl sm:text-2xl font-bold tracking-tight leading-tight">
+                    {c.data.name}
+                  </h2>
+                  <p class="text-sm font-medium text-muted-foreground tnum">
+                    {c.data.scopeHeadline}
+                  </p>
+                  <p class="text-[0.95rem] font-medium leading-snug">
+                    {c.data.tagline}
+                  </p>
+                </div>
+
+                <div class="space-y-4 text-[0.95rem] leading-relaxed">
+                  <p>
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                      Context
+                    </span>
+                    {c.data.context}
+                  </p>
+                  <p>
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                      Role
+                    </span>
+                    {c.data.roleNarrative}
+                  </p>
+                  {c.data.methodology.length > 0 && (
+                    <div>
+                      <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                        Built / owned
+                      </span>
+                      <ul class="space-y-1.5 list-disc pl-5 marker:text-primary">
+                        {c.data.methodology.map((m) => (
+                          <li>{m}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {c.data.inlineDiagram && (
+                  <div class="space-y-1.5">
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block">
+                      Architecture
+                    </span>
+                    <pre
+                      class="text-[0.7rem] sm:text-xs leading-snug font-mono p-4 border border-border/60 rounded-sm bg-muted/40 text-foreground/90 overflow-x-auto"
+                    >{c.data.inlineDiagram}</pre>
+                  </div>
+                )}
+
+                {c.data.stack.length > 0 && (
+                  <div class="flex flex-wrap gap-x-2 gap-y-2">
+                    {c.data.stack.map((s) => (
+                      <span class="text-[0.65rem] uppercase tracking-[0.12em] px-2 py-0.5 border border-border rounded-sm font-mono text-muted-foreground">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="space-y-3 pt-2">
+        <p class="text-xs text-muted-foreground/85 leading-relaxed">
+          Content lifted from AECOM-cleared 2025-10-22 resume and prior-employer
+          public engagement records. Linesight (current Senior Cost Manager
+          role at hyperscale data centers) is intentionally out of scope here
+          — see
+          <a href="/about" class="link-soft hover:text-foreground">/about</a>
+          and
+          <a href="/experience" class="link-soft hover:text-foreground"
+            >/experience</a
+          >
+          for sector-level context.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>

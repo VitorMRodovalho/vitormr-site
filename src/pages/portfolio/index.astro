@@ -25,11 +25,31 @@ const totalPowerBiDashboards = allPowerBiSuites.reduce(
   0,
 );
 
+const allCaseStudies = await getCollection("caseStudies");
+
 const families = [
+  {
+    slug: "case-studies",
+    href: "/portfolio/case-studies",
+    name: "Case studies",
+    pillLabel: "Selected",
+    cta: "Browse case studies",
+    tagline:
+      "Selected programs from 15+ years of capital-program delivery — federal rail, higher-ed bond, real-estate data integration, residential, procurement, mining, M&A",
+    stats: [
+      { label: "Programs", value: allCaseStudies.length },
+      { label: "Sectors", value: 7 },
+      { label: "Years span", value: "2010 – 2025" },
+    ],
+    blurb:
+      "Pure-text case studies — no client logos, no screenshots, no artifact reproduction. Content lifted from AECOM-cleared resume + prior-employer public engagement records. Includes Amtrak FDT $6.7B, Peralta College Bond $1B, Trinus Databricks Lakehouse, EMISA 700-unit residential, Direcional R$89M procurement, Anglo American Barro Alto $1.9B, and Cipasa+Nova Colorado M&A turnaround.",
+  },
   {
     slug: "power-bi",
     href: "/portfolio/power-bi",
     name: "Power BI",
+    pillLabel: "MIT",
+    cta: "Browse Power BI suites",
     tagline: "Anonymized production analytics for Brazilian real-estate development + BPO operations",
     stats: [
       { label: "Suites", value: allPowerBiSuites.length },
@@ -95,7 +115,7 @@ const portfolioHubSchema: Record<string, unknown> = {
               </span>
               <div class="space-y-3 min-w-0">
                 <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
-                  <span class="role-pill">MIT</span>
+                  <span class="role-pill">{family.pillLabel}</span>
                   <a
                     href={family.href}
                     class="text-xl sm:text-2xl font-bold tracking-tight link-soft"
@@ -121,7 +141,7 @@ const portfolioHubSchema: Record<string, unknown> = {
                 <p class="text-[0.95rem] leading-relaxed">{family.blurb}</p>
                 <p class="text-xs pt-1">
                   <a href={family.href} class="link-soft hover:text-foreground">
-                    Browse {family.name} suites →
+                    {family.cta} →
                   </a>
                 </p>
               </div>
