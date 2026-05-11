@@ -141,4 +141,29 @@ const caseStudies = defineCollection({
   }),
 });
 
-export const collections = { experience, projects, powerbi, caseStudies };
+/**
+ * `writing` — long-form essays + technical notes. Started as a stub post-V09a
+ * (council product-leader rec: "even 1 anchor post passes the original-
+ * contribution Kazarian test"). MDX-bodied; Schema.org BlogPosting on
+ * detail page via schemaJsonLd prop on BaseLayout.
+ *
+ * Compliance posture: same as case-studies family — no client-confidential
+ * artifacts. Linesight sector-only.
+ */
+const writing = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/writing" }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    description: z.string(),
+    publishedAt: z.string(),
+    updatedAt: z.string().optional(),
+    revision: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    estimatedReadMinutes: z.number().int().min(1),
+    order: z.number().int().default(100),
+    status: z.enum(["draft", "living", "published"]).default("living"),
+  }),
+});
+
+export const collections = { experience, projects, powerbi, caseStudies, writing };

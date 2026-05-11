@@ -1,0 +1,158 @@
+---
+import { getCollection } from "astro:content";
+import SiteFooter from "../../components/SiteFooter.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+/**
+ * /writing — long-form essays + technical notes hub.
+ *
+ * Started as a stub post-V09a (council product-leader rec). v0 ships
+ * with 1 anchor post (AI ⨯ PM Framework). Subsequent posts land
+ * through ordinary content-collection additions; no further structural
+ * change needed.
+ *
+ * Compliance posture: same as case-studies — no client-confidential
+ * artifacts. Linesight sector-only.
+ */
+
+const allWriting = await getCollection("writing");
+const writing = allWriting
+  .filter((w) => w.data.status !== "draft")
+  .sort((a, b) => a.data.order - b.data.order);
+
+const title = "Writing · Vitor M. Rodovalho";
+const description =
+  "Long-form essays and technical notes on AI ⨯ project management, data engineering at scale, and capital-program cost intelligence. Living documents — revised as the thinking matures.";
+
+function fmtDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+const writingHubSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: "Writing",
+  description,
+  url: "https://vitormr.dev/writing/",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  blogPost: writing.map((w) => ({
+    "@type": "BlogPosting",
+    headline: w.data.title,
+    description: w.data.description,
+    url: `https://vitormr.dev/writing/${w.id}/`,
+    datePublished: w.data.publishedAt,
+    ...(w.data.updatedAt ? { dateModified: w.data.updatedAt } : {}),
+    author: {
+      "@type": "Person",
+      name: "Vitor Maia Rodovalho",
+      url: "https://vitormr.dev",
+    },
+    keywords: w.data.tags.join(", "),
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schemaJsonLd={writingHubSchema}
+>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;Writing
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Living essays<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Long-form notes that argue a position rather than report on one. Each
+          essay is a living document — revisions happen in public as the thinking
+          matures. If something here is wrong, contestable, or worth pushing on,
+          <a href="mailto:vitor@vitormr.dev" class="link-soft hover:text-foreground"
+            >email me</a
+          >.
+        </p>
+      </header>
+
+      <section class="space-y-12">
+        {
+          writing.length === 0 ? (
+            <p class="text-sm text-muted-foreground italic">
+              No essays published yet.
+            </p>
+          ) : (
+            writing.map((w, i) => (
+              <article class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8 border-b border-border/60 pb-12 last:border-b-0 last:pb-0">
+                <span class="section-num tnum pt-1">
+                  {String(i + 1).padStart(2, "0")}.
+                </span>
+                <div class="space-y-3 min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                    <span class="tnum">{fmtDate(w.data.publishedAt)}</span>
+                    <span>·</span>
+                    <span class="tnum">{w.data.estimatedReadMinutes} min</span>
+                    {w.data.revision && (
+                      <>
+                        <span>·</span>
+                        <span class="italic">{w.data.revision}</span>
+                      </>
+                    )}
+                  </div>
+                  <a
+                    href={`/writing/${w.id}`}
+                    class="block text-2xl sm:text-3xl font-bold tracking-tight link-soft"
+                  >
+                    {w.data.title}
+                  </a>
+                  {w.data.subtitle && (
+                    <p class="text-base text-muted-foreground italic leading-snug">
+                      {w.data.subtitle}
+                    </p>
+                  )}
+                  <p class="text-[0.95rem] leading-relaxed">
+                    {w.data.description}
+                  </p>
+                  {w.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-x-2 gap-y-2 pt-1">
+                      {w.data.tags.map((t) => (
+                        <span class="text-[0.65rem] uppercase tracking-[0.12em] px-2 py-0.5 border border-border rounded-sm font-mono text-muted-foreground">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p class="text-xs pt-1">
+                    <a
+                      href={`/writing/${w.id}`}
+                      class="link-soft hover:text-foreground"
+                    >
+                      Read essay →
+                    </a>
+                  </p>
+                </div>
+              </article>
+            ))
+          )
+        }
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
