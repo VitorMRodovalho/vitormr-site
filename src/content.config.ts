@@ -166,4 +166,31 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { experience, projects, powerbi, caseStudies, writing };
+/**
+ * `methodologies` — Tier 2 portfolio family of abstract patterns from
+ * Vitor's career work. Distinct from `caseStudies` which keeps the
+ * named programs intact: `methodologies` strips away the client + dollar
+ * figures + program names and articulates the reusable pattern.
+ *
+ * Compliance posture: NO client names, NO project names, NO dollar
+ * figures. The methodology is named for the PATTERN, not the engagement
+ * where Vitor authored it. Linesight scope-only.
+ */
+const methodologies = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/methodologies" }),
+  schema: z.object({
+    name: z.string(),
+    domain: z.string(),
+    tagline: z.string(),
+    principle: z.string(),
+    summary: z.string(),
+    context: z.string(),
+    mechanism: z.array(z.string()).default([]),
+    applicability: z.array(z.string()).default([]),
+    antiPattern: z.string().optional(),
+    stackAgnostic: z.boolean().default(true),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = { experience, projects, powerbi, caseStudies, writing, methodologies };

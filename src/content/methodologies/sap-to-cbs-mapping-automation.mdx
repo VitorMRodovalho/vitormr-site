@@ -1,0 +1,31 @@
+---
+name: "ERP-to-CBS mapping automation"
+domain: "Data engineering · cost integration"
+tagline: "Map once at the boundary, refresh the dashboard for free"
+principle: "Cost-Breakdown Structures change slowly; ERP cost objects change weekly. Encode the mapping at the boundary, not in the dashboard."
+summary: >
+  When the program-controls cost-breakdown structure (CBS) doesn't
+  match the ERP's cost objects (typical when the WBS was set up before
+  the ERP was implemented), every monthly refresh rebuilds the mapping
+  by hand. The fix is to encode the mapping as a versioned table at the
+  ingestion boundary so the refresh becomes a SELECT.
+context: >
+  Large programs run on ERPs (SAP, Oracle EBS, Workday Adaptive) whose
+  cost-object hierarchy was designed for the prime contractor's
+  corporate finance, not the program's WBS. The standard symptom is a
+  scheduler + cost analyst doing weekly VLOOKUP rituals to translate
+  ERP cost objects into program-CBS rows.
+mechanism:
+  - "Mapping table maintained outside the dashboard (Postgres, SharePoint list, or governed CSV)"
+  - "Boundary script applies the mapping during ingest; downstream consumers see only CBS"
+  - "Mapping changes are versioned + dated so historical reports stay reproducible"
+  - "Monthly refresh becomes idempotent — same input data + same mapping = same output"
+  - "Unmapped cost-objects raise an exception, not silently drop"
+applicability:
+  - "Programs where WBS predates the ERP rollout"
+  - "Multi-package programs sharing one ERP"
+  - "Audit-sensitive delivery where historical reproducibility is non-negotiable"
+antiPattern: "Putting the mapping logic in the dashboard's data-model. The dashboard becomes brittle, hard to test, and impossible to back-fill when the mapping changes."
+stackAgnostic: true
+order: 2
+---

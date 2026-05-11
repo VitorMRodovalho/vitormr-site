@@ -1,0 +1,35 @@
+---
+name: "Multi-typology cost-center hierarchy"
+domain: "Data engineering · real-estate finance"
+tagline: "Standardize-then-federate, never federate-then-reconcile"
+principle: "If 50 portfolio companies report on incompatible cost-center hierarchies, the answer is one hierarchy with N typologies — not N hierarchies."
+summary: >
+  Real-estate investment platforms that grow by acquisition end up with
+  50+ operating companies, each carrying its own cost-center taxonomy
+  inherited from its own ERP rollout. The default is "reconcile during
+  consolidation," which means the central data plane never holds a
+  clean source of truth. The fix is to design ONE standardized
+  cost-center hierarchy with N typology variants (residential /
+  commercial / land-development / mixed-use), then federate the
+  operating companies into it.
+context: >
+  Investment-grade real-estate platforms ($1B+ AUM, multi-fund) need
+  unified financial reporting + ML-driven performance tracking, which
+  both depend on a consistent cost-center taxonomy. The portfolio
+  companies were not designed to report into one — they were acquired
+  with their own setups. Migration requires a deliberate "typology
+  first" framing.
+mechanism:
+  - "Define a standardized hierarchy with 4-6 typology variants (one per major real-estate product)"
+  - "Each typology has its own bottom-3-levels of detail, shared top-3 levels"
+  - "Acquired company → typology assignment as the FIRST integration step"
+  - "Migration rewrites historical data into the standardized hierarchy"
+  - "Future acquisitions land on the typology spine on day 1"
+applicability:
+  - "Investment platforms growing by acquisition"
+  - "Multi-product portfolio finance (real estate · infrastructure · operating businesses)"
+  - "Any consolidation effort where the standardization step is being deferred"
+antiPattern: "Building consolidation logic that reconciles N→1 at report time. The complexity compounds with each acquisition; the historical baseline is never trustable; ML-driven detection becomes impossible because the feature space changes every time."
+stackAgnostic: true
+order: 4
+---

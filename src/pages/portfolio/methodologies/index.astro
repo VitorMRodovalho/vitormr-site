@@ -1,0 +1,186 @@
+---
+import { getCollection } from "astro:content";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+/**
+ * /portfolio/methodologies/ — Tier 2 portfolio family of abstract
+ * patterns from Vitor's career work. Distinct from /portfolio/case-
+ * studies/, which keeps the named programs intact.
+ *
+ * Each methodology strips client identity, dollar figures, and
+ * program names — what remains is the reusable pattern that another
+ * practitioner can lift into a different engagement.
+ *
+ * Pure-text card treatment per V10 case-studies pattern. No client
+ * logos / screenshots / artifact reproduction. Linesight scope-only
+ * (active NDA on hyperscale data centers).
+ */
+
+const allMethodologies = await getCollection("methodologies");
+const methodologies = allMethodologies.sort((a, b) => a.data.order - b.data.order);
+
+const title = "Methodologies · Portfolio · Vitor M. Rodovalho";
+const description =
+  "Abstract patterns from 15+ years of capital-program delivery — cost-reporting governance, ERP-to-CBS mapping, monthly invoice compliance, multi-typology cost-center hierarchies, Curve A procurement, standardized vendor prequalification, and Earned-Value baseline discipline. Patterns abstracted away from named engagements.";
+
+const portfolioMethodologiesSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Methodologies",
+  description,
+  url: "https://vitormr.dev/portfolio/methodologies/",
+  author: {
+    "@type": "Person",
+    name: "Vitor Maia Rodovalho",
+    url: "https://vitormr.dev",
+  },
+  hasPart: methodologies.map((m) => ({
+    "@type": "CreativeWork",
+    name: m.data.name,
+    description: m.data.summary,
+    genre: "Methodology",
+    keywords: [m.data.domain, m.data.tagline].join(", "),
+    author: {
+      "@type": "Person",
+      name: "Vitor Maia Rodovalho",
+      url: "https://vitormr.dev",
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schemaJsonLd={portfolioMethodologiesSchema}
+>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          <span class="text-primary">§</span>&nbsp;<a
+            href="/portfolio"
+            class="link-soft hover:text-foreground">Portfolio</a
+          >&nbsp;·&nbsp;Methodologies
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Abstract patterns<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Reusable methodologies extracted from 15+ years of capital-program
+          delivery. Names, dollar figures, and program specifics are stripped
+          — what remains is the pattern that travels. For the named engagements
+          where these were developed, see{" "}
+          <a href="/portfolio/case-studies" class="link-soft hover:text-foreground"
+            >/portfolio/case-studies</a
+          >.
+        </p>
+      </header>
+
+      <section class="space-y-14">
+        {
+          methodologies.map((m, i) => (
+            <article class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8 border-b border-border/60 pb-14 last:border-b-0 last:pb-0">
+              <span class="section-num tnum pt-1">
+                {String(i + 1).padStart(2, "0")}.
+              </span>
+              <div class="space-y-5 min-w-0">
+                <div class="space-y-2">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+                    <span class="role-pill">Pattern</span>
+                    <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                      {m.data.domain}
+                    </span>
+                  </div>
+                  <h2 class="text-xl sm:text-2xl font-bold tracking-tight leading-tight">
+                    {m.data.name}
+                  </h2>
+                  <p class="text-[0.95rem] font-medium leading-snug">
+                    {m.data.tagline}
+                  </p>
+                </div>
+
+                <blockquote class="border-l-2 border-primary pl-4 text-[0.95rem] italic leading-relaxed text-foreground">
+                  {m.data.principle}
+                </blockquote>
+
+                <div class="space-y-4 text-[0.95rem] leading-relaxed">
+                  <p>
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                      Summary
+                    </span>
+                    {m.data.summary}
+                  </p>
+                  <p>
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                      Context
+                    </span>
+                    {m.data.context}
+                  </p>
+                  {m.data.mechanism.length > 0 && (
+                    <div>
+                      <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                        Mechanism
+                      </span>
+                      <ul class="space-y-1.5 list-disc pl-5 marker:text-primary">
+                        {m.data.mechanism.map((bullet) => (
+                          <li>{bullet}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {m.data.applicability.length > 0 && (
+                    <div>
+                      <span class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground block mb-1">
+                        When to use
+                      </span>
+                      <ul class="space-y-1.5 list-disc pl-5 marker:text-primary">
+                        {m.data.applicability.map((bullet) => (
+                          <li>{bullet}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {m.data.antiPattern && (
+                    <div class="rounded-xl border border-amber-500/30 bg-amber-50/30 dark:bg-amber-500/[0.04] px-4 py-3">
+                      <span class="text-[0.65rem] uppercase tracking-[0.18em] text-amber-700 dark:text-amber-400 block mb-1">
+                        Anti-pattern
+                      </span>
+                      <p class="text-[0.95rem] leading-relaxed">{m.data.antiPattern}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div class="flex flex-wrap gap-x-2 gap-y-2">
+                  <span class="text-[0.65rem] uppercase tracking-[0.12em] px-2 py-0.5 border border-border rounded-sm font-mono text-muted-foreground">
+                    {m.data.stackAgnostic ? "Stack-agnostic" : "Stack-specific"}
+                  </span>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="space-y-3 pt-2">
+        <p class="text-xs text-muted-foreground/85 leading-relaxed">
+          Patterns abstracted from named engagements (Amtrak FDT, Peralta
+          College Bond MSA, Trinus CO, EMISA, Direcional, Anglo American Barro
+          Alto). For the source case studies see{" "}
+          <a href="/portfolio/case-studies" class="link-soft hover:text-foreground"
+            >/portfolio/case-studies</a
+          >. Linesight (current Senior Cost Manager role) is intentionally out
+          of scope — sector-level context only on{" "}
+          <a href="/about" class="link-soft hover:text-foreground">/about</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
