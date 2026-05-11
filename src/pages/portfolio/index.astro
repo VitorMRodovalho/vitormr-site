@@ -26,6 +26,7 @@ const totalPowerBiDashboards = allPowerBiSuites.reduce(
 );
 
 const allCaseStudies = await getCollection("caseStudies");
+const allMethodologies = await getCollection("methodologies");
 
 const families = [
   {
@@ -43,6 +44,22 @@ const families = [
     ],
     blurb:
       "Pure-text case studies — no client logos, no screenshots, no artifact reproduction. Content lifted from AECOM-cleared resume + prior-employer public engagement records. Includes Amtrak FDT $6.7B, Peralta College Bond $1B, Trinus Databricks Lakehouse, EMISA 700-unit residential, Direcional R$89M procurement, Anglo American Barro Alto $1.9B, and Cipasa+Nova Colorado M&A turnaround.",
+  },
+  {
+    slug: "methodologies",
+    href: "/portfolio/methodologies",
+    name: "Methodologies",
+    pillLabel: "Patterns",
+    cta: "Browse methodologies",
+    tagline:
+      "Abstract patterns extracted from the case studies — reusable methodology distilled away from named engagements and dollar figures",
+    stats: [
+      { label: "Patterns", value: allMethodologies.length },
+      { label: "Domains", value: 4 },
+      { label: "Stack", value: "Agnostic" },
+    ],
+    blurb:
+      "Reusable patterns that travel: cost-reporting governance SOP · ERP-to-CBS mapping automation · monthly invoice compliance checklist · multi-typology cost-center hierarchy · Curve A procurement strategy · standardized vendor prequalification · Earned-Value baseline discipline. Each names the principle, the mechanism, the applicability, and the anti-pattern.",
   },
   {
     slug: "power-bi",
