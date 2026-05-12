@@ -2,12 +2,10 @@
 
 /* Note: Google Fonts loaded via <link> tags in src/layouts/BaseLayout.astro
  * because Tailwind v4 + Vite strips CSS @import url() during bundling
- * (verified 2026-05-09 V02.5 deploy: tokens compiled but fonts never fetched). */
+ * (tokens compile but fonts never fetched). */
 
 /**
- * Mono-forward design system for vitormr.dev — V02.5 design pass per
- * frontend-design skill output 2026-05-09 (with council guardrails:
- * ux-principal + product-leader + tech-architect).
+ * Mono-forward design system for vitormr.dev.
  *
  * Aesthetic direction: print-engineering tabular precision + builder/hacker
  * authenticity.
@@ -17,16 +15,16 @@
  *  - Hi-vis safety amber as sole signature accent — link underlines, section
  *    numbers, role badges, build stamps. Everything else neutral grayscale
  *    so the amber genuinely impacts.
- *  - Light mode default; [data-theme="dark"] explicit override (V06: theme
- *    swap is now driven by an inline pre-paint script in BaseLayout that
- *    resolves system preference + localStorage into an explicit data-theme
- *    attr on <html>; manual override via ThemeToggle in V06b).
+ *  - Light mode default; [data-theme="dark"] explicit override. Theme swap
+ *    is driven by an inline pre-paint script in BaseLayout that resolves
+ *    system preference + localStorage into an explicit data-theme attr on
+ *    <html>; manual override via ThemeToggle.
  *  - CSS-only motion (staggered fadeUp on first paint, prefers-reduced-motion
  *    guarded). Zero-JS by default per Astro Islands invariant.
  *
- * Constraint invariant (tech-architect): all tokens live in this @theme
- * block only. NO component-level color/font literals so V03/V04/V05 PRs
- * inherit cleanly without churn.
+ * Constraint invariant: all tokens live in this @theme block only. NO
+ * component-level color/font literals so future PRs inherit cleanly
+ * without churn.
  */
 
 @theme {

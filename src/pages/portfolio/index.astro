@@ -11,8 +11,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
  *
  * Distinct from /projects (open-source builds Vitor authored / founded).
  * Portfolio = anonymized client-context artifacts; Projects = first-party
- * open-source. Council 2026-05-10 endorsed the split for audience-fit
- * (USCIS counsel + recruiters value the differentiation).
+ * open-source. The split serves audience-fit.
  */
 
 const allPowerBiSuites = await getCollection("powerbi");
@@ -43,7 +42,7 @@ const families = [
       { label: "Years span", value: "2010 – 2025" },
     ],
     blurb:
-      "Pure-text case studies — no client logos, no screenshots, no artifact reproduction. Content lifted from AECOM-cleared resume + prior-employer public engagement records. Includes Amtrak FDT $6.7B, Peralta College Bond $1B, Trinus Databricks Lakehouse, EMISA 700-unit residential, Direcional R$89M procurement, Anglo American Barro Alto $1.9B, and Cipasa+Nova Colorado M&A turnaround.",
+      "Pure-text case studies — no client logos, no screenshots, no artifact reproduction. Content drawn from externally-disclosable prior-program work. Includes Amtrak FDT $6.7B, Peralta College Bond $1B, Trinus Databricks Lakehouse, EMISA 700-unit residential, Direcional R$89M procurement, Anglo American Barro Alto $1.9B, and Cipasa+Nova Colorado M&A turnaround.",
   },
   {
     slug: "methodologies",
