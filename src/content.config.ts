@@ -172,7 +172,7 @@ const writing = defineCollection({
  *
  * Compliance posture: NO client names, NO project names, NO dollar
  * figures. The methodology is named for the PATTERN, not the engagement
- * where Vitor authored it. Linesight scope-only.
+ * where Vitor authored it. Current-employer scope only.
  */
 const methodologies = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/methodologies" }),
@@ -191,4 +191,46 @@ const methodologies = defineCollection({
   }),
 });
 
-export const collections = { experience, projects, powerbi, caseStudies, writing, methodologies };
+/**
+ * `credentials` — professional licenses, certifications, designations,
+ * and competence-based memberships. Distinct from `awards` (recognition
+ * received for past achievement) and `experience` (employment timeline):
+ * a credential is a verifiable permission-to-practice or knowledge-
+ * attestation issued by a governing body.
+ *
+ * Schema mirrors sarah-rodovalho-site's `credentials` collection exactly
+ * so the same sync_credentials.py script can target both sites with no
+ * code changes — just a different --content-dir + --person invocation.
+ *
+ * Compliance posture: credential identifiers (PMP #, CMAA #, CONFEA #,
+ * etc.) are stored only in Orenu's dim_credential.credential_id_private
+ * column (never synced to public sites). The MDX `credentialId` field
+ * is reserved for credentials whose IDs are designed to be looked up
+ * against a public registry (e.g., NCARB Record, CAU registry).
+ */
+const credentials = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/credentials" }),
+  schema: z.object({
+    title: z.string(),
+    organization: z.string(),
+    organizationUrl: z.url().optional(),
+    kind: z.enum(["license", "certification", "designation", "membership"]),
+    status: z.enum(["active", "in-progress", "expired"]).default("active"),
+    credentialId: z.string().optional(),
+    issuedDate: z.string().optional(),
+    validThrough: z.string().optional(),
+    verifyUrl: z.url().optional(),
+    description: z.string().optional(),
+    order: z.number().int().default(100),
+  }),
+});
+
+export const collections = {
+  experience,
+  projects,
+  powerbi,
+  caseStudies,
+  writing,
+  methodologies,
+  credentials,
+};

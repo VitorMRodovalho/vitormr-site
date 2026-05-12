@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 import pmiNomineeBadge from "../assets/pmi-latam-nominee-2025.png";
 import SiteFooter from "../components/SiteFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -22,29 +23,17 @@ const title = "Recognition · Vitor M. Rodovalho";
 const description =
   "Credentials, education, awards, memberships, and community service — evidence-grade record. PMP®, CMAA, Brazil Civil Engineer license (CONFEA / CREA-GO), Columbia Construction Management Specialization, MBA-FGV, U Akron Executive Program, and PMI LATAM Excellence Awards 2025 nominee.";
 
-const credentials = [
-  {
-    name: "Project Management Professional (PMP®)",
-    issuer: "Project Management Institute (PMI)",
-    issuerUrl: "https://www.pmi.org/certifications/project-management-pmp",
-    status: "Active member",
-    period: "Active",
-  },
-  {
-    name: "Construction Management Association of America (CMAA)",
-    issuer: "CMAA",
-    issuerUrl: "https://www.cmaanet.org",
-    status: "Member",
-    period: "Active",
-  },
-  {
-    name: "Licensed Civil Engineer (Brazil)",
-    issuer: "CONFEA / CREA-GO",
-    issuerUrl: "https://www.confea.org.br",
-    status: "Licensed since 2010",
-    period: "Active",
-  },
-];
+const allCredentials = await getCollection("credentials");
+const credentials = allCredentials.sort((a, b) => a.data.order - b.data.order);
+
+const STATUS_PERIOD_LABEL: Record<
+  (typeof credentials)[number]["data"]["status"],
+  string
+> = {
+  active: "Active",
+  "in-progress": "In progress",
+  expired: "Expired",
+};
 
 const education = [
   {
@@ -277,15 +266,21 @@ const recognitionPersonSchema: Record<string, unknown> = {
               <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
                 <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
                 <div class="space-y-1.5 min-w-0">
-                  <h3 class="text-lg font-semibold tracking-tight">{c.name}</h3>
+                  <h3 class="text-lg font-semibold tracking-tight">{c.data.title}</h3>
                   <p class="text-sm text-muted-foreground">
-                    <a href={c.issuerUrl} class="link-soft hover:text-foreground" rel="noopener">
-                      {c.issuer}
-                    </a>
+                    {c.data.organizationUrl ? (
+                      <a href={c.data.organizationUrl} class="link-soft hover:text-foreground" rel="noopener">
+                        {c.data.organization}
+                      </a>
+                    ) : (
+                      c.data.organization
+                    )}
                     {" · "}
-                    <span class="tnum">{c.period}</span>
+                    <span class="tnum">{STATUS_PERIOD_LABEL[c.data.status]}</span>
                   </p>
-                  <p class="text-[0.95rem] leading-relaxed">{c.status}</p>
+                  {c.data.description && (
+                    <p class="text-[0.95rem] leading-relaxed">{c.data.description}</p>
+                  )}
                 </div>
               </li>
             ))
