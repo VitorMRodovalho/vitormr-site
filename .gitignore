@@ -148,3 +148,10 @@ vite.config.ts.timestamp-*
 # Cloudflare Workers / Pages dev state
 .wrangler/
 .dev.vars
+
+# Python (sync_credentials.py + tests)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
