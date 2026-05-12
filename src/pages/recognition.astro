@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import pmiNomineeBadge from "../assets/pmi-latam-nominee-2025.png";
 import SiteFooter from "../components/SiteFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -79,31 +78,8 @@ const education = [
   },
 ];
 
-const awards = [
-  {
-    name: "PMI LATAM Excellence Awards 2025 — Nominee",
-    category: "“Carlos Novello” Volunteer of the Year · LATAM Brasil",
-    issuer: "Project Management Institute · LATAM region",
-    year: "2025",
-    detail:
-      "Chapter-nominated by PMI Brazil Goiás for sustained voluntary contribution to the AI ⨯ Project Management research initiative across federated Brazilian chapters. Notification by PMI LATAM Chapter Engagement (Diana Victor) on December 18, 2025.",
-    badge: pmiNomineeBadge,
-  },
-  {
-    name: "LAIOB Scholarship",
-    category: "Innovative Project Management Executive Program · The University of Akron",
-    issuer: "LAIOB",
-    year: "2022",
-    detail: "Competitive selection for the executive program; full scholarship.",
-  },
-  {
-    name: "Direcional +Educação Scholarship",
-    category: "Postgraduate studies — MBA Real Estate Business & Construction Management at FGV",
-    issuer: "Direcional Engenharia",
-    year: "2012",
-    detail: "Employer-sponsored postgraduate scholarship.",
-  },
-];
+const allAwards = await getCollection("awards");
+const awards = allAwards.sort((a, b) => a.data.order - b.data.order);
 
 const continuingEducation = {
   aiPm: [
@@ -360,7 +336,7 @@ const recognitionPersonSchema: Record<string, unknown> = {
         <div class="flex items-baseline justify-between border-b border-border pb-3">
           <h2 class="text-xl font-bold tracking-tight">Awards &amp; honors</h2>
           <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
-            Three entries
+            {awards.length}&nbsp;entries
           </span>
         </div>
         <ol class="space-y-10">
@@ -370,20 +346,20 @@ const recognitionPersonSchema: Record<string, unknown> = {
                 <span class="section-num tnum pt-1">{String(i + 1).padStart(2, "0")}.</span>
                 <div class="space-y-2 min-w-0">
                   <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <h3 class="text-lg font-semibold tracking-tight">{a.name}</h3>
+                    <h3 class="text-lg font-semibold tracking-tight">{a.data.title}</h3>
                     <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground tnum">
-                      {a.year}
+                      {a.data.period}
                     </span>
                   </div>
-                  <p class="text-sm text-muted-foreground">
-                    {a.category}
-                  </p>
-                  <p class="text-[0.95rem] leading-relaxed">{a.detail}</p>
-                  {a.badge && (
+                  {a.data.subcategory && (
+                    <p class="text-sm text-muted-foreground">{a.data.subcategory}</p>
+                  )}
+                  <p class="text-[0.95rem] leading-relaxed">{a.data.description}</p>
+                  {a.data.heroImage && a.data.heroImageAlt && (
                     <div class="pt-3">
                       <Image
-                        src={a.badge}
-                        alt={`PMI LATAM Excellence Awards 2025 nominee badge — ${a.category}`}
+                        src={a.data.heroImage}
+                        alt={a.data.heroImageAlt}
                         widths={[120, 160, 240]}
                         sizes="(min-width: 768px) 160px, 120px"
                         class="w-[120px] md:w-[160px] aspect-square object-contain"

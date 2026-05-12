@@ -192,6 +192,51 @@ const methodologies = defineCollection({
 });
 
 /**
+ * `awards` — honors, scholarships, nominations, leadership memberships.
+ * Distinct from `credentials` (verifiable permission-to-practice /
+ * knowledge attestation) and `experience` (employment timeline): an
+ * award is recognition received for past achievement or appointment.
+ *
+ * Schema mirrors sarah-rodovalho-site's `awards` collection so the same
+ * sync_awards.py script can target both sites with no field translation
+ * (the `evidenceCategory` field is omitted on Vitor's side — internal
+ * cross-referencing is Sarah-only). The `status` enum captures the
+ * nominee/finalist/received distinction (Vitor's PMI LATAM 2025
+ * Nominee case + future workflows).
+ */
+const awards = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/awards" }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        organization: z.string(),
+        organizationUrl: z.url().optional(),
+        scope: z.enum([
+          "international",
+          "professional-leadership",
+          "honor-society",
+          "team-award",
+          "academic-honor",
+          "competitive-scholarship",
+        ]),
+        status: z.enum(["received", "nominee", "finalist"]).default("received"),
+        subcategory: z.string().optional(),
+        period: z.string(),
+        yearAwarded: z.number().int().min(2000).max(2100).optional(),
+        description: z.string(),
+        externalUrl: z.url().optional(),
+        heroImage: image().optional(),
+        heroImageAlt: z.string().optional(),
+        order: z.number().int().default(100),
+      })
+      .refine((data) => !data.heroImage || data.heroImageAlt, {
+        message: "heroImageAlt is required when heroImage is set",
+        path: ["heroImageAlt"],
+      }),
+});
+
+/**
  * `credentials` — professional licenses, certifications, designations,
  * and competence-based memberships. Distinct from `awards` (recognition
  * received for past achievement) and `experience` (employment timeline):
@@ -233,4 +278,5 @@ export const collections = {
   writing,
   methodologies,
   credentials,
+  awards,
 };
