@@ -114,12 +114,12 @@ const powerbi = defineCollection({
 /**
  * `caseStudies` — Tier 2 portfolio family of selected professional
  * programs Vitor delivered. Pure-text card treatment (no client logos,
- * no screenshots, no real artifact reproduction); content lifted from
- * Vitor's AECOM-cleared resume so external-marketing-cleared. Optional
- * inline ASCII data-flow diagram for cases where flow narrative helps
- * comprehension (currently Trinus Databricks Lakehouse).
+ * no screenshots, no real artifact reproduction); content drawn only
+ * from externally-disclosable prior-program work. Optional inline ASCII
+ * data-flow diagram for cases where flow narrative helps comprehension.
  *
- * Compliance posture: no Linesight (active NDA — sector-only on /about).
+ * Compliance posture: current-employer programs are intentionally out
+ * of scope — sector-only on /about.
  */
 const caseStudies = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/case-studies" }),
@@ -142,13 +142,11 @@ const caseStudies = defineCollection({
 });
 
 /**
- * `writing` — long-form essays + technical notes. Started as a stub post-V09a
- * (council product-leader rec: "even 1 anchor post passes the original-
- * contribution Kazarian test"). MDX-bodied; Schema.org BlogPosting on
- * detail page via schemaJsonLd prop on BaseLayout.
+ * `writing` — long-form essays + technical notes. MDX-bodied; Schema.org
+ * BlogPosting on detail page via schemaJsonLd prop on BaseLayout.
  *
  * Compliance posture: same as case-studies family — no client-confidential
- * artifacts. Linesight sector-only.
+ * artifacts.
  */
 const writing = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/writing" }),

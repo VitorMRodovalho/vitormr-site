@@ -5,15 +5,13 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 
 /**
  * /portfolio/case-studies/ — Tier 2 portfolio family of selected
- * professional programs Vitor delivered. Pure-text card treatment per
- * council 2026-05-10 guidance: no client logos, no screenshots, no
- * artifact reproduction. Content lifted from AECOM-cleared 2025-10-22
- * resume + Trinus-period work; Linesight is intentionally out of scope
- * (active NDA — sector-only on /about).
+ * professional programs Vitor delivered. Pure-text card treatment: no
+ * client logos, no screenshots, no artifact reproduction. Content drawn
+ * from publicly-disclosable prior-program work; current-employer
+ * programs are intentionally out of scope (sector-only on /about).
  *
  * Inline ASCII data-flow diagram is included only on cases where flow
- * narrative meaningfully helps comprehension (currently Trinus
- * Databricks Lakehouse).
+ * narrative meaningfully helps comprehension.
  */
 
 const allCaseStudies = await getCollection("caseStudies");
@@ -76,7 +74,7 @@ const portfolioCaseStudiesSchema: Record<string, unknown> = {
           investment data integration, multifamily residential, regional
           procurement, mining, and post-acquisition M&amp;A turnaround. Pure
           text by design (no client logos, no screenshots, no artifact
-          reproduction). Linesight (current employer) is sector-only on
+          reproduction). Current-employer programs are sector-only on
           <a href="/about" class="link-soft hover:text-foreground">/about</a>.
         </p>
       </header>
@@ -169,9 +167,8 @@ const portfolioCaseStudiesSchema: Record<string, unknown> = {
 
       <section class="space-y-3 pt-2">
         <p class="text-xs text-muted-foreground/85 leading-relaxed">
-          Content lifted from AECOM-cleared 2025-10-22 resume and prior-employer
-          public engagement records. Linesight (current Senior Cost Manager
-          role at hyperscale data centers) is intentionally out of scope here
+          Content drawn from externally-disclosable prior-program work.
+          Current-employer programs are intentionally out of scope here
           — see
           <a href="/about" class="link-soft hover:text-foreground">/about</a>
           and

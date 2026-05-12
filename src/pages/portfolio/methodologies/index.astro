@@ -12,9 +12,9 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
  * program names — what remains is the reusable pattern that another
  * practitioner can lift into a different engagement.
  *
- * Pure-text card treatment per V10 case-studies pattern. No client
- * logos / screenshots / artifact reproduction. Linesight scope-only
- * (active NDA on hyperscale data centers).
+ * Pure-text card treatment matching the case-studies pattern. No client
+ * logos / screenshots / artifact reproduction. Current-employer scope
+ * is sector-only on /about.
  */
 
 const allMethodologies = await getCollection("methodologies");
@@ -174,8 +174,8 @@ const portfolioMethodologiesSchema: Record<string, unknown> = {
           Alto). For the source case studies see{" "}
           <a href="/portfolio/case-studies" class="link-soft hover:text-foreground"
             >/portfolio/case-studies</a
-          >. Linesight (current Senior Cost Manager role) is intentionally out
-          of scope — sector-level context only on{" "}
+          >. Current-employer programs are intentionally out of scope —
+          sector-level context only on{" "}
           <a href="/about" class="link-soft hover:text-foreground">/about</a>.
         </p>
       </section>

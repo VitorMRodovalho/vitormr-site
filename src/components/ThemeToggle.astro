@@ -2,10 +2,10 @@
 /**
  * ThemeToggle — segmented mono-styled pill for Light / Dark / System.
  *
- * V06b second half of V06 split. The pre-paint bootstrap script in
- * BaseLayout already resolves localStorage.theme → data-theme on <html>;
- * this island is the WRITE side: clicking a button persists the choice
- * and re-applies the resolved theme without a reload.
+ * The pre-paint bootstrap script in BaseLayout already resolves
+ * localStorage.theme → data-theme on <html>; this island is the WRITE
+ * side: clicking a button persists the choice and re-applies the
+ * resolved theme without a reload.
  *
  * "System" persists the literal string "system" in localStorage; on next
  * page load the bootstrap reads it and resolves matchMedia at that point.

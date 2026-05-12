@@ -16,7 +16,7 @@ interface Props {
   description: string;
   /**
    * Optional Schema.org JSON-LD payload(s) appended AFTER the default Person
-   * markup. Single object or array. Per-page enrichment for V09b (e.g.,
+   * markup. Single object or array. Per-page enrichment (e.g.,
    * SoftwareApplication on /projects/[slug], CollectionPage on /portfolio/*,
    * extended Person on /recognition). Search engines aggregate same-entity
    * Person blocks via shared `url` + `sameAs`.
@@ -42,13 +42,13 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
 
-    <!-- Theme bootstrap (V06): blocking script that resolves localStorage
-         into an explicit data-theme attr on <html> BEFORE first paint.
+    <!-- Theme bootstrap: blocking script that resolves localStorage into
+         an explicit data-theme attr on <html> BEFORE first paint.
          Prevents FOUC; single source of truth so CSS uses [data-theme="dark"]
          selector (no @media branch). Default is LIGHT — system preference is
          only honored when user explicitly opts into "system" via the toggle
-         island (V06b). Until V06b lands, dark is reachable by setting
-         localStorage.theme = "dark" manually. -->
+         island. Dark is reachable by setting localStorage.theme = "dark"
+         manually. -->
     <script is:inline>
       (() => {
         try {

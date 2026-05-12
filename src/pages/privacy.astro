@@ -4,15 +4,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 /**
  * /privacy — factual notice of what this site collects, what it doesn't,
- * and which third-party services see your visit. Shipped V16 per ADR-024
- * Phase 1a prereq (compliance-counsel D4): a public privacy page must
- * exist on both personal-branding sites before any Orenu→site data sync
- * lands. CCPA-focused; minimal copy; no marketing posture.
+ * and which third-party services see your visit. CCPA-focused; minimal
+ * copy; no marketing posture.
  *
  * Scope intentionally narrow to current visitor-facing data flows
  * (Cloudflare edge logs + Google Fonts CDN). Build-time content sourcing
- * (e.g. future Orenu auto-sync) is not visitor data and is not disclosed
- * here — visitor-facing notice covers visitor-facing flows only.
+ * is not visitor data and is not disclosed here — visitor-facing notice
+ * covers visitor-facing flows only.
  */
 
 const title = "Privacy · Vitor M. Rodovalho";
