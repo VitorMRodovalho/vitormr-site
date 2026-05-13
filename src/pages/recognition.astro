@@ -104,52 +104,8 @@ const continuingEducation = {
   ],
 };
 
-const community = [
-  {
-    role: "Co-founder · Platform & framework author",
-    org: "AI & PM Research Hub (Núcleo IA & GP)",
-    affiliation: "PMI Brazil · multi-chapter (Mar 2024 – present)",
-    detail:
-      "Voluntary inter-chapter PMI Brazil research initiative on AI ⨯ Project Management. Co-founded; author of the open-source platform and the management framework. Started in 2024 as a PMI Goiás Chapter pilot; now a federation of 5 PMI Brazilian Chapters (Goiás, Ceará, Distrito Federal, Minas Gerais, Rio Grande do Sul) with 10 more in integration, 50+ researchers active across Cycle 3 (2026/1) organized in 4 strategic quadrants under 8 lead researchers and 10 tribe leaders. Submission accepted for the PMI LIM Summit LATAM 2026. Externally recognized in April 2026 at CBGPL — Brazil's largest Project Management conference (1,200+ leaders) — when Ricardo Viana Vargas, Ph.D. closed his keynote with a dedicated acknowledgment of the initiative.",
-    href: "https://nucleoia.vitormr.dev",
-  },
-  {
-    role: "Project Manager",
-    org: "PMI Brazil Goiás Chapter",
-    affiliation: "Aug 2019 – Dec 2021",
-    detail:
-      "Two-and-a-half years as chapter-level project management volunteer. Project Manager of PMentoring — PMI Goiás's structured mentor–mentorando program for chapter members and the broader community — governed PMBOK-style across the ten knowledge areas, with Vitor as Gerente do Projeto and PMI-GO as Patrocinador. The 1st cycle (planned 2019, ran January–June 2020) opened registrations one week before COVID-19 was declared a pandemic and ran through the early-pandemic transition; twelve mentor–mentorando pairs, half PMI-affiliated and half community, up to 10 PDUs in the Leadership category on completion. Project Manager of subsequent cycles as well.",
-  },
-  {
-    role: "Mentor",
-    org: "PMI & GPjr Latin America Connection Journey",
-    affiliation: "Oct 2020 – Dec 2020",
-    detail: "Mentorship cohort for early-career Latin American project-management professionals.",
-  },
-  {
-    role: "Sales Volunteer",
-    org: "Fundação Estudar — “Na Prática”",
-    affiliation: "Oct 2019 – Oct 2021",
-    detail: "Two-year volunteer sales work for a Brazilian career-development foundation.",
-  },
-  {
-    role: "Director General (President)",
-    org: "Centro Acadêmico de Engenharia Civil “Marcus Vinícius Cavalcanti” (CAEC) · UEG",
-    affiliation: "Dec 2005 election · two consecutive mandates",
-    detail:
-      "Re-established the extinct Centro Acadêmico de Engenharia Civil at Universidade Estadual de Goiás (Anápolis campus) as Director General of the elected “Chapa RECONSTRUIR” slate, serving two consecutive mandates. Led campaigns for a permanent CAEC headquarters (“Cantinho E-Civil”), a university cafeteria, and summer courses; authored governance documents (bylaws, election rules, meeting minutes); produced the Manual do Calouro freshman guide; designed the CAEC visual identity; and built and maintained a custom library system (Estante/PHP) for the CAEC book collection. During this period, also co-founded — alongside the department's academic coordination under Prof. Marcus Vinícius Silva Cavalcanti, after whom the CAEC was named — the AMEnC (Associação Minerva de Engenharia Civil), an umbrella student association operating at a higher organizational level than the CAEC, and the ComEnC (Comissão Permanente de Engenharia Civil), the standing committee that organized the annual SemanEnC engineering weeks; served as a ComEnC member across SemanEnC editions 3 through 6 (2005–2008) and authored the SemanEnC 5 PHP web-registration and certificate-generation system (2007); led engineering-extension activities in partnership with academic coordination. In parallel, served as the official web designer for the Civil Engineering department under a formal UEG subdomain contract, in partnership with GR InfoArt — built and maintained three independent web applications on engenhariacivil.ueg.br: a Joomla department portal, a separate Joomla CAEC site, and the Biblioteca/Estante system.",
-    archives: [
-      {
-        label: "movimento-estudantil-ueg",
-        url: "https://github.com/VitorMRodovalho/movimento-estudantil-ueg",
-      },
-      {
-        label: "engenharia-civil-ueg",
-        url: "https://github.com/VitorMRodovalho/engenharia-civil-ueg",
-      },
-    ],
-  },
-];
+const allCommunity = await getCollection("community");
+const community = allCommunity.sort((a, b) => a.data.order - b.data.order);
 
 // Schema.org extended Person — surfaces hasCredential, alumniOf, and award
 // arrays that BaseLayout's default Person doesn't include. Same `url` +
@@ -462,26 +418,26 @@ const recognitionPersonSchema: Record<string, unknown> = {
                 <div class="space-y-1.5 min-w-0">
                   <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
-                      {c.role}
+                      {c.data.role}
                     </span>
-                    {c.href ? (
+                    {c.data.organizationUrl ? (
                       <a
-                        href={c.href}
+                        href={c.data.organizationUrl}
                         class="text-lg font-semibold tracking-tight link-soft"
                         rel="noopener"
                       >
-                        {c.org}
+                        {c.data.organization}
                       </a>
                     ) : (
-                      <h3 class="text-lg font-semibold tracking-tight">{c.org}</h3>
+                      <h3 class="text-lg font-semibold tracking-tight">{c.data.organization}</h3>
                     )}
                   </div>
-                  <p class="text-sm text-muted-foreground tnum">{c.affiliation}</p>
-                  <p class="text-[0.95rem] leading-relaxed">{c.detail}</p>
-                  {c.archives && (
+                  <p class="text-sm text-muted-foreground tnum">{c.data.affiliation}</p>
+                  <p class="text-[0.95rem] leading-relaxed">{c.data.description}</p>
+                  {c.data.archiveLinks && c.data.archiveLinks.length > 0 && (
                     <p class="text-xs pt-1 flex flex-wrap gap-x-4 gap-y-1">
                       <span class="text-muted-foreground">Archives:</span>
-                      {c.archives.map((a) => (
+                      {c.data.archiveLinks.map((a) => (
                         <a
                           href={a.url}
                           class="link-soft hover:text-foreground"
