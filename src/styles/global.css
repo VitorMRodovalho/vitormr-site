@@ -200,6 +200,18 @@ samp {
   font-feature-settings: "tnum", "zero";
 }
 
+/* WatermarkLayer companion — lifts body content above the fixed-position
+ * watermark aside. Siblings of `<aside class="wm-layer">` need a positioning
+ * context to honor z-index; .wm-layer sits at z-index:0, content at 1. */
+body > main,
+body > footer,
+body > header,
+body > nav,
+body > div[role="group"] {
+  position: relative;
+  z-index: 1;
+}
+
 /* Role pill (e.g. AUTHOR / FOUNDER badges in featured projects) */
 .role-pill {
   display: inline-block;

@@ -10,10 +10,18 @@
 
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import WatermarkLayer from "../components/WatermarkLayer.astro";
 
 interface Props {
   title: string;
   description: string;
+  /**
+   * Ambient watermark variant. Per-page mapping in
+   * `src/components/WatermarkLayer.astro`. Defaults to `"none"` —
+   * pages opt in explicitly so density-heavy pages (e.g. /recognition,
+   * /about) stay clean.
+   */
+  watermark?: "home" | "dax" | "none";
   /**
    * Optional Schema.org JSON-LD payload(s) appended AFTER the default Person
    * markup. Single object or array. Per-page enrichment (e.g.,
@@ -24,7 +32,7 @@ interface Props {
   schemaJsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, schemaJsonLd } = Astro.props;
+const { title, description, watermark = "none", schemaJsonLd } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const extraSchemas: Record<string, unknown>[] = schemaJsonLd
   ? Array.isArray(schemaJsonLd)
@@ -152,6 +160,7 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
     }
   </head>
   <body class="min-h-screen flex flex-col">
+    <WatermarkLayer variant={watermark} />
     <ThemeToggle />
     <slot />
   </body>

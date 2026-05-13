@@ -1,0 +1,131 @@
+---
+/**
+ * WatermarkLayer — ambient texture layer for the print-engineering aesthetic.
+ *
+ * Variants:
+ *  - "home"  → universal cost-engineering register (AISC LRFD beam + EVM
+ *              SPI/CPI/EAC metrics). No project favoritism — bridges civil
+ *              + cost-manager identity for the homepage.
+ *  - "dax"   → real DAX measure (CPI accumulated · weighted-avg pattern
+ *              with VAR + SUMX + KEEPFILTERS) — semantically scoped to
+ *              /portfolio/power-bi.
+ *  - "none"  → renders only the engineering grid (no text overlay).
+ *
+ * Fixed-position aside, aria-hidden, pointer-events:none. Page content is
+ * lifted to z-index:1 by global CSS so the watermark never blocks
+ * interaction. currentColor binds to --color-foreground; per-theme opacity
+ * compensates dark mode contrast. Hidden under @media print.
+ */
+
+interface Props {
+  variant?: "home" | "dax" | "none";
+}
+
+const { variant = "none" } = Astro.props;
+---
+
+<aside class="wm-layer" aria-hidden="true" data-variant={variant}>
+  {variant === "home" && (
+    <>
+      <div class="wm-text-tr">{`// earned value · cost + schedule
+EV  = % Complete × BAC
+SPI = EV / PV
+CPI = EV / AC
+EAC = BAC / CPI
+
+// forecast variance
+VAC = BAC - EAC
+TCPI = (BAC - EV) / (BAC - AC)`}</div>
+      <div class="wm-text-bl">{`// simple beam · uniform load
+M(x) = (w·L·x)/2 - (w·x²)/2
+M_max = w·L²/8   @ x = L/2
+
+// AISC 360 · LRFD strength check
+∅ · M_n  ≥  M_u
+∅ = 0.90  (flexure)`}</div>
+    </>
+  )}
+  {variant === "dax" && (
+    <div class="wm-text-tr">{`// CPI accumulated · weighted-avg pattern
+CPI_Accumulated :=
+VAR _PV =
+    CALCULATE(
+        SUMX(Items, Items[Cost_Planned]),
+        KEEPFILTERS(
+            Calendar[Date] <= MAX(Calendar[Date])
+        )
+    )
+VAR _AC =
+    CALCULATE(
+        SUMX(Items, Items[Cost_Actual]),
+        KEEPFILTERS(
+            Calendar[Date] <= MAX(Calendar[Date])
+        )
+    )
+RETURN
+    DIVIDE(_PV, _AC, BLANK())
+
+// VAR + SWITCH(TRUE()) dynamic format
+// SUMX + KEEPFILTERS construction-progress pattern`}</div>
+  )}
+</aside>
+
+<style>
+  .wm-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    color: var(--color-foreground);
+  }
+  .wm-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, currentColor 1px, transparent 1px),
+      linear-gradient(to bottom, currentColor 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.045;
+  }
+  .wm-text-tr,
+  .wm-text-bl {
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Monaco, monospace;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    white-space: pre;
+    opacity: 0.085;
+    font-weight: 400;
+    font-feature-settings: "zero";
+    user-select: none;
+    letter-spacing: -0.01em;
+    max-width: 22rem;
+  }
+  .wm-text-tr {
+    position: absolute;
+    top: 9.5rem;
+    right: max(2rem, calc((100vw - 48rem) / 2 - 22rem));
+  }
+  .wm-text-bl {
+    position: absolute;
+    top: 34rem;
+    left: max(2rem, calc((100vw - 48rem) / 2 - 20rem));
+    line-height: 1.7;
+  }
+  .wm-layer[data-variant="dax"] .wm-text-tr {
+    top: 8rem;
+  }
+  :root[data-theme="dark"] .wm-layer::before {
+    opacity: 0.07;
+  }
+  :root[data-theme="dark"] .wm-text-tr,
+  :root[data-theme="dark"] .wm-text-bl {
+    opacity: 0.12;
+  }
+  @media print {
+    .wm-layer {
+      display: none;
+    }
+  }
+</style>
