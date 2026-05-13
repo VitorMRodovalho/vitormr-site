@@ -237,6 +237,38 @@ const awards = defineCollection({
 });
 
 /**
+ * `community` — voluntary community-service participation spans.
+ * Distinct from `experience` (employment) and `awards` (recognition
+ * received): a community entry captures a role + organization + time
+ * span + description for an unpaid contribution.
+ *
+ * Schema matches Orenu's fact_community_service table for sync.
+ * archiveLinks captures code/document repo links (e.g., CAEC entry
+ * surfaces 2 GitHub repo archives).
+ */
+const community = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/community" }),
+  schema: z.object({
+    role: z.string(),
+    organization: z.string(),
+    organizationUrl: z.url().optional(),
+    affiliation: z.string(),
+    startYear: z.number().int().min(1900).max(2100).optional(),
+    isCurrent: z.boolean().default(false),
+    description: z.string(),
+    archiveLinks: z
+      .array(
+        z.object({
+          label: z.string(),
+          url: z.url(),
+        }),
+      )
+      .default([]),
+    order: z.number().int().default(100),
+  }),
+});
+
+/**
  * `credentials` — professional licenses, certifications, designations,
  * and competence-based memberships. Distinct from `awards` (recognition
  * received for past achievement) and `experience` (employment timeline):
@@ -279,4 +311,5 @@ export const collections = {
   methodologies,
   credentials,
   awards,
+  community,
 };
