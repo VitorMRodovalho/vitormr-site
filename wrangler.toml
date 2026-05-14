@@ -23,3 +23,9 @@ workers_dev = false
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "404-page"
+# Default behaviour serves matched static assets BEFORE invoking the Worker,
+# which means the www→apex redirect in worker.js never fires for paths that
+# exist in dist/ (i.e. every page). run_worker_first = true inverts that:
+# every request hits worker.js first, and non-www requests fall through via
+# env.ASSETS.fetch. Latency overhead per request is microseconds.
+run_worker_first = true
