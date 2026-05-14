@@ -1,8 +1,10 @@
-# Cloudflare Workers config — Workers Static Assets mode.
+# Cloudflare Workers config — Workers Static Assets with a thin redirect wrapper.
 #
-# Asset-only Worker: no main script. Cloudflare uploads dist/ contents
-# to its global CDN. Same pattern as sarah-rodovalho-site, validated
-# 2026-05-09.
+# worker.js exists solely to 301-redirect www.vitormr.dev → apex. Everything
+# else falls through to env.ASSETS, which serves dist/ identically to the
+# prior static-only deployment. Pattern still mirrors sarah-rodovalho-site;
+# if that site also gets duplicate-content signals on www, port worker.js
+# verbatim (s/vitormr.dev/sarahrodovalho.com/).
 #
 # Build (dashboard-configured): pnpm install && pnpm build → ./dist
 # Deploy (dashboard-configured): npx wrangler deploy
@@ -13,9 +15,11 @@
 # orthogonal to subdomain Workers.
 
 name = "vitormr-site"
+main = "./worker.js"
 compatibility_date = "2026-05-09"
 workers_dev = false
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 not_found_handling = "404-page"
