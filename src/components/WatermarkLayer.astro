@@ -12,6 +12,14 @@
  *  - "orenu" → Orenu schema motif: household-scoped RLS policy +
  *              explicit Data API GRANT pattern (post Supabase 2026-10-30
  *              enforcement). Semantically scoped to /projects/orenu.
+ *  - "meridianiq" → Primavera P6 XER export fragment + DCMA 14-Point
+ *              schedule health checks. Semantically scoped to
+ *              /projects/meridianiq.
+ *  - "panorama" → Multi-tenant Postgres RLS via GUC + FORCE RLS, plus a
+ *              hash-chained audit-event log formula (tamper-evident).
+ *              Semantically scoped to /projects/panorama. Distinct from
+ *              "orenu" — Orenu uses auth.uid() (Supabase auth), Panorama
+ *              uses current_setting('app.tenant_id') (multi-tenant GUC).
  *  - "none"  → renders only the engineering grid (no text overlay).
  *
  * Fixed-position aside, aria-hidden, pointer-events:none. Page content is
@@ -21,7 +29,7 @@
  */
 
 interface Props {
-  variant?: "home" | "dax" | "orenu" | "none";
+  variant?: "home" | "dax" | "orenu" | "meridianiq" | "panorama" | "none";
 }
 
 const { variant = "none" } = Astro.props;
@@ -95,6 +103,52 @@ ALTER TABLE public.fact_transaction
   ENABLE ROW LEVEL SECURITY;`}</div>
     </>
   )}
+  {variant === "meridianiq" && (
+    <>
+      <div class="wm-text-tr">{`// p6 xer · task export · cpm fragment
+%T TASK
+%F task_id task_code task_name
+   status_code target_start_date
+   target_end_date duration_hr_cnt
+%R 25001 A1010 "Engineering"
+   TK_Active 2026-01-15
+   2026-04-30 1440
+
+// xer round-trip · write-back fidelity`}</div>
+      <div class="wm-text-bl">{`// dcma 14 · schedule health checks
+1. logic         ≥ 95% acts w/ preds
+2. leads         ≤ 5% relationships
+3. lags          ≤ 5% relationships
+4. hard constr   ≤ 5% activities
+5. high float    ≤ 5% > 44d
+6. negative float = 0
+7. high duration ≤ 5% > 44d`}</div>
+    </>
+  )}
+  {variant === "panorama" && (
+    <>
+      <div class="wm-text-tr">{`// multi-tenant rls · postgres GUC pattern
+ALTER TABLE assets
+  ENABLE ROW LEVEL SECURITY,
+  FORCE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation
+  ON assets
+  USING (
+    tenant_id =
+      current_setting('app.tenant_id')::uuid
+  );`}</div>
+      <div class="wm-text-bl">{`// hash-chained audit · tamper-evident
+event_hash := sha256(
+  prev_hash
+  || actor_id
+  || event_type
+  || payload
+  || occurred_at
+);
+// any mutation breaks the chain`}</div>
+    </>
+  )}
 </aside>
 
 <style>
@@ -148,6 +202,12 @@ ALTER TABLE public.fact_transaction
   }
   .wm-layer[data-variant="orenu"] .wm-text-bl {
     top: 38rem;
+  }
+  .wm-layer[data-variant="meridianiq"] .wm-text-tr {
+    top: 8rem;
+  }
+  .wm-layer[data-variant="panorama"] .wm-text-tr {
+    top: 8rem;
   }
   :root[data-theme="dark"] .wm-layer::before {
     opacity: 0.07;
