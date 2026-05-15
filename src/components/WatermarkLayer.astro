@@ -20,6 +20,9 @@
  *              Semantically scoped to /projects/panorama. Distinct from
  *              "orenu" — Orenu uses auth.uid() (Supabase auth), Panorama
  *              uses current_setting('app.tenant_id') (multi-tenant GUC).
+ *  - "methodologies" → Process-flow motif: ERP→CBS cost-classification
+ *              pipeline + Curve A procurement priority pattern. Scoped to
+ *              /portfolio/methodologies (abstract patterns surface).
  *  - "none"  → renders only the engineering grid (no text overlay).
  *
  * Fixed-position aside, aria-hidden, pointer-events:none. Page content is
@@ -29,7 +32,7 @@
  */
 
 interface Props {
-  variant?: "home" | "dax" | "orenu" | "meridianiq" | "panorama" | "none";
+  variant?: "home" | "dax" | "orenu" | "meridianiq" | "panorama" | "methodologies" | "none";
 }
 
 const { variant = "none" } = Astro.props;
@@ -149,6 +152,29 @@ event_hash := sha256(
 // any mutation breaks the chain`}</div>
     </>
   )}
+  {variant === "methodologies" && (
+    <>
+      <div class="wm-text-tr">{`// erp → cbs mapping · cost reporting
+[ ERP source ledger ]
+        ↓  classify by cost_account
+[ project cost account ]
+        ↓  aggregate
+[ CBS level 3 · trade ]
+        ↓  roll-up
+[ CBS level 1 · summary ]
+        ↓
+[ executive · committed vs forecast ]`}</div>
+      <div class="wm-text-bl">{`// curve a · procurement priority
+80/20 by spend:
+  tier-A items
+    → ≤ 12 wks lead time
+    → pre-qualified vendor pool
+    → CBS-anchored pricing
+    → committed budget at board
+
+// pattern travels across engagements`}</div>
+    </>
+  )}
 </aside>
 
 <style>
@@ -207,6 +233,9 @@ event_hash := sha256(
     top: 8rem;
   }
   .wm-layer[data-variant="panorama"] .wm-text-tr {
+    top: 8rem;
+  }
+  .wm-layer[data-variant="methodologies"] .wm-text-tr {
     top: 8rem;
   }
   :root[data-theme="dark"] .wm-layer::before {
