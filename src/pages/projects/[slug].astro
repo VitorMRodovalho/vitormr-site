@@ -53,9 +53,14 @@ if (data.license) projectSchema.license = data.license;
 if (data.techStack && data.techStack.length > 0) {
   projectSchema.keywords = data.techStack.join(", ");
 }
+
+// Per-project ambient watermark — opt-in by slug. Other projects fall
+// through to "none" (clean canvas). Mapped here, not in content frontmatter,
+// because variants live in the WatermarkLayer component (code-coupled).
+const watermarkVariant = project.id === "orenu" ? "orenu" : "none";
 ---
 
-<BaseLayout title={title} description={description} schemaJsonLd={projectSchema}>
+<BaseLayout title={title} description={description} watermark={watermarkVariant} schemaJsonLd={projectSchema}>
   <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
     <div class="max-w-3xl mx-auto space-y-16">
       <header class="space-y-6">
