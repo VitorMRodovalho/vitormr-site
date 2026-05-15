@@ -23,6 +23,12 @@
  *  - "methodologies" → Process-flow motif: ERP→CBS cost-classification
  *              pipeline + Curve A procurement priority pattern. Scoped to
  *              /portfolio/methodologies (abstract patterns surface).
+ *  - "case-studies" → CPM critical-path forward/backward pass math +
+ *              program closeout scorecard format. Scoped to
+ *              /portfolio/case-studies. Distinct from "home" (EVM/AISC),
+ *              "dax" (DAX measures), and "meridianiq" (P6 XER export +
+ *              DCMA 14 validation) — case-studies is the schedule-
+ *              INTERNAL math + deliverable digest, not export format.
  *  - "none"  → renders only the engineering grid (no text overlay).
  *
  * Fixed-position aside, aria-hidden, pointer-events:none. Page content is
@@ -32,7 +38,7 @@
  */
 
 interface Props {
-  variant?: "home" | "dax" | "orenu" | "meridianiq" | "panorama" | "methodologies" | "none";
+  variant?: "home" | "dax" | "orenu" | "meridianiq" | "panorama" | "methodologies" | "case-studies" | "none";
 }
 
 const { variant = "none" } = Astro.props;
@@ -175,6 +181,29 @@ event_hash := sha256(
 // pattern travels across engagements`}</div>
     </>
   )}
+  {variant === "case-studies" && (
+    <>
+      <div class="wm-text-tr">{`// cpm · forward + backward pass
+ES_j = max(EF_i)  over preds i of j
+EF_j = ES_j + dur_j
+
+LF_i = min(LS_j)  over succs j of i
+LS_i = LF_i - dur_i
+
+// float · critical path identification
+TF_i  = LS_i - ES_i
+crit  ⇔  (TF_i = 0)`}</div>
+      <div class="wm-text-bl">{`// program closeout · scorecard digest
+§ scope     · final WBS approved
+§ schedule  · top critical-path acts
+§ cost      · CAC vs BAC variance %
+§ vendor    · top suppliers · lead time
+§ risk      · top closed / open / xfer
+§ safety    · recordable-incident rate
+
+// post-mortem ↦ methodology library`}</div>
+    </>
+  )}
 </aside>
 
 <style>
@@ -236,6 +265,9 @@ event_hash := sha256(
     top: 8rem;
   }
   .wm-layer[data-variant="methodologies"] .wm-text-tr {
+    top: 8rem;
+  }
+  .wm-layer[data-variant="case-studies"] .wm-text-tr {
     top: 8rem;
   }
   :root[data-theme="dark"] .wm-layer::before {
