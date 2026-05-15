@@ -57,7 +57,14 @@ if (data.techStack && data.techStack.length > 0) {
 // Per-project ambient watermark — opt-in by slug. Other projects fall
 // through to "none" (clean canvas). Mapped here, not in content frontmatter,
 // because variants live in the WatermarkLayer component (code-coupled).
-const watermarkVariant = project.id === "orenu" ? "orenu" : "none";
+const watermarkVariant =
+  project.id === "orenu"
+    ? "orenu"
+    : project.id === "meridianiq"
+      ? "meridianiq"
+      : project.id === "panorama"
+        ? "panorama"
+        : "none";
 ---
 
 <BaseLayout title={title} description={description} watermark={watermarkVariant} schemaJsonLd={projectSchema}>
