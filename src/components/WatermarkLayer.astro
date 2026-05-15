@@ -9,6 +9,9 @@
  *  - "dax"   → real DAX measure (CPI accumulated · weighted-avg pattern
  *              with VAR + SUMX + KEEPFILTERS) — semantically scoped to
  *              /portfolio/power-bi.
+ *  - "orenu" → Orenu schema motif: household-scoped RLS policy +
+ *              explicit Data API GRANT pattern (post Supabase 2026-10-30
+ *              enforcement). Semantically scoped to /projects/orenu.
  *  - "none"  → renders only the engineering grid (no text overlay).
  *
  * Fixed-position aside, aria-hidden, pointer-events:none. Page content is
@@ -18,7 +21,7 @@
  */
 
 interface Props {
-  variant?: "home" | "dax" | "none";
+  variant?: "home" | "dax" | "orenu" | "none";
 }
 
 const { variant = "none" } = Astro.props;
@@ -68,6 +71,30 @@ RETURN
 // VAR + SWITCH(TRUE()) dynamic format
 // SUMX + KEEPFILTERS construction-progress pattern`}</div>
   )}
+  {variant === "orenu" && (
+    <>
+      <div class="wm-text-tr">{`// household-scoped row-level security
+CREATE POLICY hh_members_can_select
+  ON public.dim_account
+  FOR SELECT TO authenticated
+  USING (
+    household_id IN (
+      SELECT current_user_household_ids()
+    )
+  );
+
+// auth.uid() · multi-tenant by household`}</div>
+      <div class="wm-text-bl">{`// supabase data api · explicit grants
+//   enforcement: 2026-10-30
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON public.fact_transaction
+  TO authenticated;
+// no anon · edge gate is the perimeter
+
+ALTER TABLE public.fact_transaction
+  ENABLE ROW LEVEL SECURITY;`}</div>
+    </>
+  )}
 </aside>
 
 <style>
@@ -115,6 +142,12 @@ RETURN
   }
   .wm-layer[data-variant="dax"] .wm-text-tr {
     top: 8rem;
+  }
+  .wm-layer[data-variant="orenu"] .wm-text-tr {
+    top: 8rem;
+  }
+  .wm-layer[data-variant="orenu"] .wm-text-bl {
+    top: 38rem;
   }
   :root[data-theme="dark"] .wm-layer::before {
     opacity: 0.07;
