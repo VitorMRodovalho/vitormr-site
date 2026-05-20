@@ -1,0 +1,389 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+/**
+ * /admin/metrics — Cloudflare Web Analytics aggregates for vitormr.dev.
+ * Gated by Cloudflare Access at the edge.
+ *
+ * The shell is server-rendered (static); metric values are fetched
+ * client-side from /admin/api/metrics (handled by worker.js, which
+ * queries the CF GraphQL Analytics API and caches 5min). CF Access
+ * cookie auto-flows on the fetch since the request is same-origin.
+ *
+ * Privacy posture: matches /privacy disclosure. CF Web Analytics is
+ * cookieless and aggregate-only — same data rendered here lives on
+ * dash.cloudflare.com, just brought into the gated /admin area for
+ * convenience during divulgation pushes and EB-2 NIW evidence
+ * tracking. UTM/QR vocab consumed in the top-referrers + top-pages
+ * breakdown is documented in docs/site-reviews/utm-conventions.md.
+ *
+ * Pattern mirrors sarah-rodovalho-site /admin/metrics; project-interest
+ * card replaces Sarah's press-kit-interest card.
+ */
+
+const title = "Site metrics · Vitor M. Rodovalho";
+const description =
+  "Cloudflare Web Analytics aggregates for vitormr.dev — visits, top pages, top countries, top referrers, project-interest breakdown. Gated /admin view.";
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-5xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground tnum"
+        >
+          <span class="text-primary">§</span>&nbsp;Admin&nbsp;·&nbsp;metrics
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Who's visiting, and<br />
+          what they're reading<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed max-w-3xl">
+          Aggregate counts from Cloudflare Web Analytics for the last 30
+          days, with a 7-day comparison and per-channel breakdown.
+          Cookieless and aggregate-only, matching the public{" "}
+          <a href="/privacy" class="link-soft hover:text-foreground">
+            privacy notice</a>. UTM-tagged links surface as distinct rows
+          under Top pages (see{" "}
+          <a
+            href="https://github.com/VitorMRodovalho/vitormr-site/blob/main/docs/site-reviews/utm-conventions.md"
+            rel="noopener"
+            class="link-soft hover:text-foreground"
+          >
+            utm-conventions
+          </a>
+          ).
+        </p>
+        <p id="generatedAt" class="build-stamp tnum">
+          CACHE&nbsp;·&nbsp;REFRESHES&nbsp;EVERY&nbsp;5&nbsp;MIN
+        </p>
+      </header>
+
+      <div id="metrics-root" class="space-y-12">
+        <p class="text-sm text-muted-foreground">Loading metrics…</p>
+      </div>
+
+      <footer
+        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/85 leading-relaxed"
+      >
+        <p>
+          Source: <a
+            href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
+            rel="noopener"
+            class="link-soft hover:text-foreground"
+          >Cloudflare Web Analytics dashboard</a> (same data). Server-side
+          query through CF GraphQL Analytics API; results cached 5 min in
+          Worker Cache. Site tag and account ID are public-ish
+          identifiers and are not secrets.
+        </p>
+      </footer>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<script>
+  type MetricsTotals = {
+    views: number;
+    visits: number;
+  };
+
+  type MetricsListItem = {
+    label: string;
+    views: number;
+    visits: number;
+  };
+
+  type MetricsDaily = {
+    date: string | null;
+    views: number;
+    visits: number;
+  };
+
+  type MetricsPayload = {
+    siteTag: string;
+    launch: string;
+    generatedAt: string;
+    totals: {
+      last7d: MetricsTotals;
+      prior7d: MetricsTotals;
+      last30d: MetricsTotals;
+      prior30d: MetricsTotals;
+      allTime: MetricsTotals;
+      delta7d: number | null;
+      delta30d: number | null;
+    };
+    daily: MetricsDaily[];
+    topPages: MetricsListItem[];
+    topCountries: MetricsListItem[];
+    topReferrers: MetricsListItem[];
+  };
+
+  async function init() {
+    const root = document.getElementById("metrics-root");
+    const generatedAt = document.getElementById("generatedAt");
+    if (!root) return;
+
+    try {
+      const resp = await fetch("/admin/api/metrics", {
+        credentials: "include",
+      });
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        root.innerHTML = renderError(
+          `HTTP ${resp.status} · ${errBody.slice(0, 240)}`,
+        );
+        return;
+      }
+      const data = (await resp.json()) as MetricsPayload;
+      root.innerHTML = renderMetrics(data);
+      if (generatedAt) {
+        const ts = new Date(data.generatedAt);
+        generatedAt.textContent = `GENERATED ${ts.toUTCString().toUpperCase()} · REFRESHES EVERY 5 MIN`;
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      root.innerHTML = renderError(msg);
+    }
+  }
+
+  function renderError(msg: string): string {
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-2">
+        <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+          Metrics unavailable
+        </p>
+        <p class="text-xl font-semibold tracking-tight">Couldn't load the data right now.</p>
+        <p class="text-sm text-muted-foreground leading-relaxed">${escapeHtml(msg)}</p>
+        <p class="text-sm leading-relaxed pt-2">
+          Fallback: open the
+          <a href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
+             rel="noopener"
+             class="link-soft hover:text-foreground">Cloudflare dashboard</a>
+          directly.
+        </p>
+      </section>`;
+  }
+
+  function renderMetrics(d: MetricsPayload): string {
+    return [
+      renderHero(d),
+      renderSparkline(d.daily),
+      renderTripleGrid(d),
+      renderProjectInterest(d),
+    ].join("");
+  }
+
+  function renderHero(d: MetricsPayload): string {
+    const last30 = d.totals.last30d;
+    const last7 = d.totals.last7d;
+    const all = d.totals.allTime;
+    const d30 = formatDelta(d.totals.delta30d);
+    const d7 = formatDelta(d.totals.delta7d);
+
+    return `
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        ${heroCard("Last 30 days", last30.visits, last30.views, d30, "vs prior 30d")}
+        ${heroCard("Last 7 days", last7.visits, last7.views, d7, "vs prior 7d")}
+        ${heroCard("Since launch", all.visits, all.views, null, formatDate(d.launch))}
+      </section>`;
+  }
+
+  function heroCard(
+    label: string,
+    visits: number,
+    views: number,
+    delta: { text: string; cls: string } | null,
+    sub: string,
+  ): string {
+    const deltaPart = delta
+      ? `<p class="build-stamp tnum ${delta.cls}">${delta.text} · ${sub}</p>`
+      : `<p class="build-stamp tnum text-muted-foreground">${escapeHtml(sub)}</p>`;
+    return `
+      <div class="border border-border/60 rounded-md p-6 space-y-2 hover:border-primary/40 transition-colors">
+        <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">${escapeHtml(label)}</p>
+        <p class="text-4xl sm:text-5xl font-bold tracking-[-0.02em] tabular-nums leading-none">
+          ${formatNumber(visits)}
+        </p>
+        <p class="text-xs text-muted-foreground">
+          visits · ${formatNumber(views)} page views
+        </p>
+        ${deltaPart}
+      </div>`;
+  }
+
+  function renderSparkline(daily: MetricsDaily[]): string {
+    if (!daily.length) return "";
+    const W = 720;
+    const H = 80;
+    const pad = 4;
+    const max = Math.max(...daily.map((p) => p.visits), 1);
+    const stepX = (W - pad * 2) / Math.max(daily.length - 1, 1);
+    const points = daily
+      .map((p, i) => {
+        const x = pad + i * stepX;
+        const y = H - pad - (p.visits / max) * (H - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(" ");
+    const first = daily[0]?.date ?? "";
+    const last = daily[daily.length - 1]?.date ?? "";
+
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-3">
+        <div class="flex items-baseline justify-between">
+          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">Daily visits · 30d</p>
+          <p class="build-stamp tnum text-muted-foreground/80">
+            ${formatDate(first)} → ${formatDate(last)}
+          </p>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-20" preserveAspectRatio="none" role="img" aria-label="Daily visits, last 30 days">
+          <polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            class="text-primary" points="${points}" />
+        </svg>
+        <p class="text-xs text-muted-foreground">Peak day: ${formatNumber(max)} visits.</p>
+      </section>`;
+  }
+
+  function renderTripleGrid(d: MetricsPayload): string {
+    const externalReferrers = d.topReferrers.filter(
+      (r) => r.label !== "vitormr.dev" && r.label !== "www.vitormr.dev",
+    );
+    return `
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        ${listCard("Top pages · 30d", d.topPages, formatPath, "views", "page views")}
+        ${listCard("Top countries · 30d", d.topCountries, escapeHtml, "visits", "visits")}
+        ${listCard("Top referrers · 30d", externalReferrers, formatReferrer, "visits", "visits")}
+      </section>`;
+  }
+
+  function listCard(
+    label: string,
+    items: MetricsListItem[],
+    formatter: (s: string) => string,
+    metric: "views" | "visits",
+    metricLabel: string,
+  ): string {
+    if (!items.length) {
+      return `
+        <div class="border border-border/60 rounded-md p-6 space-y-2">
+          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">${escapeHtml(label)}</p>
+          <p class="text-sm text-muted-foreground">No data yet.</p>
+        </div>`;
+    }
+    const sorted = [...items].sort((a, b) => b[metric] - a[metric]).slice(0, 10);
+    const rows = sorted
+      .map(
+        (it) => `
+          <li class="flex items-baseline justify-between gap-3 text-sm">
+            <span class="truncate text-foreground/85">${formatter(it.label)}</span>
+            <span class="build-stamp tnum text-muted-foreground shrink-0">${formatNumber(it[metric])}</span>
+          </li>`,
+      )
+      .join("");
+    return `
+      <div class="border border-border/60 rounded-md p-6 space-y-3">
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">${escapeHtml(label)}</p>
+          <p class="build-stamp tnum text-muted-foreground/70">${escapeHtml(metricLabel)}</p>
+        </div>
+        <ul class="space-y-2.5">${rows}</ul>
+      </div>`;
+  }
+
+  function renderProjectInterest(d: MetricsPayload): string {
+    // Filter top-pages by /projects/* and /portfolio/* prefix — adapted
+    // from Sarah's press-kit card. Tells Vitor which case study /
+    // portfolio surface is resonating.
+    const projectPages = d.topPages.filter(
+      (p) => p.label.startsWith("/projects/") || p.label.startsWith("/portfolio/"),
+    );
+    if (!projectPages.length) {
+      return `
+        <section class="border border-border/60 rounded-md p-6 space-y-2">
+          <div class="flex items-baseline justify-between gap-2">
+            <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">Project interest · 30d</p>
+            <p class="build-stamp tnum text-muted-foreground/70">page views</p>
+          </div>
+          <p class="text-sm text-muted-foreground">No /projects or /portfolio traffic yet.</p>
+        </section>`;
+    }
+    const sorted = [...projectPages].sort((a, b) => b.views - a.views).slice(0, 8);
+    const rows = sorted
+      .map(
+        (p) => `
+          <li class="flex items-baseline justify-between gap-3 text-sm">
+            <span class="truncate text-foreground/85">${formatPath(p.label)}</span>
+            <span class="build-stamp tnum text-muted-foreground shrink-0">${formatNumber(p.views)}</span>
+          </li>`,
+      )
+      .join("");
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-3">
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">Project interest · 30d</p>
+          <p class="build-stamp tnum text-muted-foreground/70">page views</p>
+        </div>
+        <ul class="space-y-2.5">${rows}</ul>
+      </section>`;
+  }
+
+  // ----- helpers --------------------------------------------------------
+
+  function formatNumber(n: number): string {
+    if (typeof n !== "number" || !Number.isFinite(n)) return "—";
+    return n.toLocaleString("en-US");
+  }
+
+  function formatDelta(
+    pct: number | null,
+  ): { text: string; cls: string } | null {
+    if (pct === null || !Number.isFinite(pct)) return null;
+    const sign = pct > 0 ? "+" : pct < 0 ? "" : "";
+    const cls =
+      pct > 0
+        ? "text-primary"
+        : pct < 0
+          ? "text-muted-foreground"
+          : "text-muted-foreground/80";
+    return { text: `${sign}${pct}%`, cls };
+  }
+
+  function formatDate(iso: string | null | undefined): string {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function formatPath(p: string): string {
+    if (!p) return "(home)";
+    const trimmed = p.length > 60 ? p.slice(0, 57) + "…" : p;
+    return `<code class="text-foreground/85">${escapeHtml(trimmed)}</code>`;
+  }
+
+  function formatReferrer(host: string): string {
+    if (!host || host === "(empty)") return "(direct / no referrer)";
+    return escapeHtml(host);
+  }
+
+  function escapeHtml(s: string): string {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  init();
+</script>

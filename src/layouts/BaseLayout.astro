@@ -30,9 +30,16 @@ interface Props {
    * Person blocks via shared `url` + `sameAs`.
    */
   schemaJsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /**
+   * Defense-in-depth for admin-gated routes (/admin/*). Emits robots
+   * noindex,nofollow,noarchive,nosnippet so search engines won't index
+   * even if a transient mis-configuration of CF Access lets a crawler
+   * past the edge gate. Public pages omit this prop and stay indexable.
+   */
+  noIndex?: boolean;
 }
 
-const { title, description, watermark = "none", schemaJsonLd } = Astro.props;
+const { title, description, watermark = "none", schemaJsonLd, noIndex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const extraSchemas: Record<string, unknown>[] = schemaJsonLd
   ? Array.isArray(schemaJsonLd)
@@ -56,6 +63,14 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
+    {
+      noIndex && (
+        <meta
+          name="robots"
+          content="noindex,nofollow,noarchive,nosnippet"
+        />
+      )
+    }
 
     <!-- Theme bootstrap: blocking script that resolves localStorage into
          an explicit data-theme attr on <html> BEFORE first paint.

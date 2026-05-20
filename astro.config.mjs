@@ -14,7 +14,14 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   site: "https://vitormr.dev",
   output: "static",
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      // Exclude /admin/* from sitemap. CF Access at the edge is the real
+      // gate; this just prevents accidental advertisement to crawlers.
+      filter: (page) => !page.includes("/admin"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
