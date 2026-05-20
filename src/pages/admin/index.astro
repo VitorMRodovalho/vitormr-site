@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+/**
+ * /admin — private dashboard, gated by Cloudflare Access (Email OTP)
+ * at the edge. CF Access app "vitormr-admin" matches /admin/*
+ * (verified firing 2026-05-19 via anon curl returning HTTP 302).
+ *
+ * Two cards today:
+ *   - Site metrics (live): Cloudflare Web Analytics aggregates rendered
+ *     inside the gate, mirroring sarah-rodovalho-site /admin/metrics.
+ *   - EB-2 NIW evidence drafts (placeholder): future home for
+ *     petition-adjacent content in production — recommendation letter
+ *     framing drafts, evidence-packet URL inventory, citation
+ *     verification queue. Not yet wired; declared so future agents +
+ *     Vitor remember the planned scope.
+ *
+ * Pages NOT linked from the public SiteFooter top-level nav. Discrete
+ * "Admin" affordance added next to /privacy in SiteFooter for
+ * findability without prominence.
+ */
+
+const title = "Admin · Vitor M. Rodovalho";
+const description =
+  "Private admin dashboard for Vitor M. Rodovalho — site metrics + EB-2 NIW evidence drafts. Gated by Cloudflare Access.";
+
+const CARDS = [
+  {
+    num: "01",
+    href: "/admin/metrics",
+    label: "Site metrics",
+    description:
+      "Cloudflare Web Analytics aggregates for the last 30 days — visits, top pages, top countries, top referrers, project-interest breakdown. Cookieless and aggregate-only, refreshed every 5 minutes.",
+    status: "live",
+  },
+  {
+    num: "02",
+    href: null,
+    label: "EB-2 NIW evidence drafts",
+    description:
+      "Placeholder for petition-adjacent content in production: draft recommendation letter framing, evidence-packet URL inventory, citation verification queue. Gated mirror of work-in-progress that isn't ready for public surface yet.",
+    status: "placeholder",
+  },
+] as const;
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main class="flex-1 px-6 sm:px-10 lg:px-16 py-20 md:py-28">
+    <div class="max-w-3xl mx-auto space-y-16">
+      <header class="space-y-5">
+        <p
+          class="text-[0.65rem] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground tnum"
+        >
+          <span class="text-primary">§</span>&nbsp;Admin&nbsp;·&nbsp;private
+        </p>
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05]"
+        >
+          Back-of-house<span class="text-primary">.</span>
+        </h1>
+        <p class="text-base text-muted-foreground leading-relaxed">
+          Gated by Cloudflare Access (Email OTP). Content here is
+          intentionally not on the public site — site metrics for
+          divulgation tracking and petition-adjacent drafts in
+          production.
+        </p>
+      </header>
+
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">Tools</h2>
+          <span class="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+            {CARDS.length} items
+          </span>
+        </div>
+        <ol class="space-y-7">
+          {
+            CARDS.map((card) => (
+              <li class="grid grid-cols-[auto_1fr] gap-x-5 sm:gap-x-8">
+                <span class="section-num tnum pt-1">{card.num}.</span>
+                <div class="space-y-2 min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 class="text-lg font-semibold tracking-tight">
+                      {card.href ? (
+                        <a
+                          href={card.href}
+                          class="link-soft hover:text-foreground"
+                        >
+                          {card.label} →
+                        </a>
+                      ) : (
+                        <span>{card.label}</span>
+                      )}
+                    </h3>
+                    <span class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                      {card.status === "live" ? "live" : "placeholder"}
+                    </span>
+                  </div>
+                  <p class="text-[0.95rem] leading-relaxed text-foreground/85">
+                    {card.description}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <footer
+        class="border-t border-border/60 pt-8 text-xs text-muted-foreground/85 leading-relaxed"
+      >
+        <p>
+          Sign-out: clear the CF_Authorization cookie (DevTools →
+          Application → Cookies → vitormr.dev) or close the browser. CF
+          Access session expires per the policy in Zero Trust dashboard
+          (24h default).
+        </p>
+      </footer>
+    </div>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
