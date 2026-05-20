@@ -44,6 +44,13 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
 <!doctype html>
 <html lang="en">
   <head>
+    <!--
+      "There are three ways to make a living in this business:
+       be first, be smarter, or cheat."
+       — John Tuld, Margin Call (2011)
+
+      I picked door #2. Source: github.com/VitorMRodovalho/vitormr-site
+    -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
@@ -71,6 +78,27 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
         } catch {
           document.documentElement.dataset.theme = "light";
         }
+      })();
+    </script>
+
+    <!-- Console signature — visible to devs who open DevTools. Pattern
+         used by Stripe, GitHub, Etsy. Zero behavioral impact; no PII; runs
+         once per pageview after the theme bootstrap above. -->
+    <script is:inline>
+      (() => {
+        const big = "font: 600 28px JetBrains Mono, ui-monospace, monospace; color: #1d6df0; padding: 6px 0;";
+        const quote = "font: italic 13px JetBrains Mono, ui-monospace, monospace; color: #475569; line-height: 1.6;";
+        const meta = "font: 12px JetBrains Mono, ui-monospace, monospace; color: #64748b;";
+        console.log("%cvitormr.dev", big);
+        console.log(
+          "%c\"Are you sure you want to do this?\"\n\"I'm sure.\"\n   — Margin Call (2011)",
+          quote,
+        );
+        console.log("%cSource: github.com/VitorMRodovalho/vitormr-site", meta);
+        console.log(
+          "%cBuilt with Astro + Tailwind + Cloudflare Workers. CF Web Analytics aggregate (cookieless). See /privacy.",
+          meta,
+        );
       })();
     </script>
 

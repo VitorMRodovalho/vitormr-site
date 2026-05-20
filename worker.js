@@ -16,6 +16,14 @@ export default {
       url.hostname = "vitormr.dev";
       return Response.redirect(url.toString(), 301);
     }
-    return env.ASSETS.fetch(req);
+    const response = await env.ASSETS.fetch(req);
+    // Easter egg — visible to anyone who inspects HTTP response headers.
+    // ASCII-only per RFC 7230; some intermediaries mangle non-ASCII bytes.
+    const newResponse = new Response(response.body, response);
+    newResponse.headers.set(
+      "X-Engineering-Note",
+      '"It is what it is until it isn\'t." -- Bobby Axelrod, Billions',
+    );
+    return newResponse;
   },
 };
