@@ -22,7 +22,7 @@ export default {
     const newResponse = new Response(response.body, response);
     newResponse.headers.set(
       "X-Engineering-Note",
-      "\"It is what it is until it isn't.\" -- Bobby Axelrod, Billions",
+      '"It is what it is until it isn\'t." -- Bobby Axelrod, Billions',
     );
     return newResponse;
   },
