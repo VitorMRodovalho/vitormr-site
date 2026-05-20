@@ -49,9 +49,14 @@ const description =
           <a href="/privacy" class="link-soft hover:text-foreground">
             privacy notice</a>. <strong>Scoped to apex
           <code>vitormr.dev</code></strong> — sibling subdomains
-          (nucleoia, orenu, meridianiq, panorama) get their own reach
-          breakdown at the bottom of the page. UTM-tagged links surface
-          as distinct rows under Top pages (see{" "}
+          (nucleoia, orenu, meridianiq, panorama) are filtered out;
+          their per-host reach is visible on the{" "}
+          <a
+            href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
+            rel="noopener"
+            class="link-soft hover:text-foreground"
+          >Cloudflare dashboard</a>. UTM-tagged links surface as
+          distinct rows under Top pages (see{" "}
           <a
             href="https://github.com/VitorMRodovalho/vitormr-site/blob/main/docs/site-reviews/utm-conventions.md"
             rel="noopener"
@@ -110,7 +115,6 @@ const description =
 
   type MetricsPayload = {
     siteTag: string;
-    apexHost: string;
     launch: string;
     generatedAt: string;
     totals: {
@@ -126,7 +130,6 @@ const description =
     topPages: MetricsListItem[];
     topCountries: MetricsListItem[];
     topReferrers: MetricsListItem[];
-    siblingHosts: MetricsListItem[];
   };
 
   async function init() {
@@ -181,7 +184,6 @@ const description =
       renderSparkline(d.daily),
       renderTripleGrid(d),
       renderProjectInterest(d),
-      renderSiblingHosts(d),
     ].join("");
   }
 
@@ -300,45 +302,6 @@ const description =
         </div>
         <ul class="space-y-2.5">${rows}</ul>
       </div>`;
-  }
-
-  function renderSiblingHosts(d: MetricsPayload): string {
-    // Umbrella context — unfiltered by requestHost. Shows apex +
-    // every sibling subdomain under vitormr.dev. Apex appears here too
-    // so the user can sanity-check what fraction of zone traffic is
-    // actually the personal site.
-    if (!d.siblingHosts.length) return "";
-    const sorted = [...d.siblingHosts]
-      .filter((h) => h.label && h.label !== "(unknown)")
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 8);
-    const rows = sorted
-      .map((h) => {
-        const isApex = h.label === d.apexHost;
-        const labelClass = isApex
-          ? "text-foreground font-medium"
-          : "text-foreground/85";
-        return `
-          <li class="flex items-baseline justify-between gap-3 text-sm">
-            <span class="truncate ${labelClass}">${escapeHtml(h.label)}${isApex ? " <span class=\"text-[0.6rem] uppercase tracking-[0.15em] text-primary\">apex</span>" : ""}</span>
-            <span class="build-stamp tnum text-muted-foreground shrink-0">${formatNumber(h.views)}</span>
-          </li>`;
-      })
-      .join("");
-    return `
-      <section class="border border-border/60 rounded-md p-6 space-y-3">
-        <div class="flex items-baseline justify-between gap-2">
-          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">Sibling subdomain reach · 30d</p>
-          <p class="build-stamp tnum text-muted-foreground/70">page views · all hosts under vitormr.dev</p>
-        </div>
-        <ul class="space-y-2.5">${rows}</ul>
-        <p class="text-xs text-muted-foreground/85 leading-relaxed pt-2">
-          The CF Web Analytics site tag is zone-scoped, so this card sums
-          apex + every subdomain (nucleoia / orenu / meridianiq /
-          panorama). All other cards above are filtered to
-          <code>vitormr.dev</code> apex only.
-        </p>
-      </section>`;
   }
 
   function renderProjectInterest(d: MetricsPayload): string {

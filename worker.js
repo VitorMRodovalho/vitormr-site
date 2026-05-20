@@ -84,8 +84,13 @@ function jsonResponse(body, status = 200, extraHeaders = {}) {
 // CF Web Analytics Auto-Setup attaches the beacon to the whole zone, so
 // the site tag for "vitormr.dev" captures every subdomain (nucleoia,
 // orenu, meridianiq, panorama) too. Apex-only metrics require an
-// explicit requestHost filter on every query. The siblingHosts query
-// stays unfiltered to surface per-subdomain reach as context.
+// explicit requestHost filter on every query.
+//
+// requestHost is valid as a filter input on rumPageloadEventsAdaptiveGroups
+// but NOT as a groupable dimension on this dataset (CF GraphQL returns
+// `unknown field "<alias>"` if you put it under `dimensions { }`).
+// Sibling-subdomain reach is available on the CF dashboard but cannot
+// be reproduced here via GraphQL — link out instead.
 const APEX_HOST = "vitormr.dev";
 
 const GRAPHQL_QUERY = `
@@ -165,19 +170,6 @@ query SiteMetrics(
         count
         sum { visits }
         dimensions { refererHost }
-      }
-
-      # Sibling subdomain reach — DELIBERATELY no requestHost filter.
-      # Groups by requestHost to show the umbrella breakdown
-      # (vitormr.dev + nucleoia + orenu + meridianiq + panorama).
-      siblingHosts: rumPageloadEventsAdaptiveGroups(
-        limit: 10
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
-        orderBy: [count_DESC]
-      ) {
-        count
-        sum { visits }
-        dimensions { requestHost }
       }
     }
   }
@@ -264,7 +256,6 @@ function transformAnalytics(raw, env) {
 
   return {
     siteTag: env.CF_WEB_ANALYTICS_SITE_TAG,
-    apexHost: APEX_HOST,
     launch: env.CF_SITE_LAUNCH_DATE || "2026-03-19",
     generatedAt: new Date().toISOString(),
     totals: {
@@ -280,7 +271,6 @@ function transformAnalytics(raw, env) {
     topPages: groupedList(account.topPages, "requestPath"),
     topCountries: groupedList(account.topCountries, "countryName"),
     topReferrers: groupedList(account.topReferrers, "refererHost"),
-    siblingHosts: groupedList(account.siblingHosts, "requestHost"),
   };
 }
 
