@@ -81,10 +81,18 @@ function jsonResponse(body, status = 200, extraHeaders = {}) {
   });
 }
 
+// CF Web Analytics Auto-Setup attaches the beacon to the whole zone, so
+// the site tag for "vitormr.dev" captures every subdomain (nucleoia,
+// orenu, meridianiq, panorama) too. Apex-only metrics require an
+// explicit requestHost filter on every query. The siblingHosts query
+// stays unfiltered to surface per-subdomain reach as context.
+const APEX_HOST = "vitormr.dev";
+
 const GRAPHQL_QUERY = `
 query SiteMetrics(
   $accountTag: string!,
   $siteTag: string!,
+  $host: string!,
   $now: Time!,
   $minus7d: Time!,
   $minus14d: Time!,
@@ -96,32 +104,32 @@ query SiteMetrics(
     accounts(filter: { accountTag: $accountTag }) {
       last7d: rumPageloadEventsAdaptiveGroups(
         limit: 1
-        filter: { siteTag: $siteTag, datetime_geq: $minus7d, datetime_lt: $now }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus7d, datetime_lt: $now }
       ) { count sum { visits } }
 
       prior7d: rumPageloadEventsAdaptiveGroups(
         limit: 1
-        filter: { siteTag: $siteTag, datetime_geq: $minus14d, datetime_lt: $minus7d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus14d, datetime_lt: $minus7d }
       ) { count sum { visits } }
 
       last30d: rumPageloadEventsAdaptiveGroups(
         limit: 1
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d, datetime_lt: $now }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus30d, datetime_lt: $now }
       ) { count sum { visits } }
 
       prior30d: rumPageloadEventsAdaptiveGroups(
         limit: 1
-        filter: { siteTag: $siteTag, datetime_geq: $minus60d, datetime_lt: $minus30d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus60d, datetime_lt: $minus30d }
       ) { count sum { visits } }
 
       allTime: rumPageloadEventsAdaptiveGroups(
         limit: 1
-        filter: { siteTag: $siteTag, date_geq: $launch }
+        filter: { siteTag: $siteTag, requestHost: $host, date_geq: $launch }
       ) { count sum { visits } }
 
       daily: rumPageloadEventsAdaptiveGroups(
         limit: 60
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus30d }
         orderBy: [date_ASC]
       ) {
         count
@@ -131,7 +139,7 @@ query SiteMetrics(
 
       topPages: rumPageloadEventsAdaptiveGroups(
         limit: 15
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus30d }
         orderBy: [count_DESC]
       ) {
         count
@@ -141,7 +149,7 @@ query SiteMetrics(
 
       topCountries: rumPageloadEventsAdaptiveGroups(
         limit: 10
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus30d }
         orderBy: [count_DESC]
       ) {
         count
@@ -151,12 +159,25 @@ query SiteMetrics(
 
       topReferrers: rumPageloadEventsAdaptiveGroups(
         limit: 10
-        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
+        filter: { siteTag: $siteTag, requestHost: $host, datetime_geq: $minus30d }
         orderBy: [count_DESC]
       ) {
         count
         sum { visits }
         dimensions { refererHost }
+      }
+
+      # Sibling subdomain reach — DELIBERATELY no requestHost filter.
+      # Groups by requestHost to show the umbrella breakdown
+      # (vitormr.dev + nucleoia + orenu + meridianiq + panorama).
+      siblingHosts: rumPageloadEventsAdaptiveGroups(
+        limit: 10
+        filter: { siteTag: $siteTag, datetime_geq: $minus30d }
+        orderBy: [count_DESC]
+      ) {
+        count
+        sum { visits }
+        dimensions { requestHost }
       }
     }
   }
@@ -175,6 +196,7 @@ async function fetchAnalytics(env) {
   const variables = {
     accountTag: env.CF_ACCOUNT_ID,
     siteTag: env.CF_WEB_ANALYTICS_SITE_TAG,
+    host: APEX_HOST,
     now: now.toISOString(),
     minus7d: offsetISO(now, -7),
     minus14d: offsetISO(now, -14),
@@ -242,6 +264,7 @@ function transformAnalytics(raw, env) {
 
   return {
     siteTag: env.CF_WEB_ANALYTICS_SITE_TAG,
+    apexHost: APEX_HOST,
     launch: env.CF_SITE_LAUNCH_DATE || "2026-03-19",
     generatedAt: new Date().toISOString(),
     totals: {
@@ -257,6 +280,7 @@ function transformAnalytics(raw, env) {
     topPages: groupedList(account.topPages, "requestPath"),
     topCountries: groupedList(account.topCountries, "countryName"),
     topReferrers: groupedList(account.topReferrers, "refererHost"),
+    siblingHosts: groupedList(account.siblingHosts, "requestHost"),
   };
 }
 
