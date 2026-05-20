@@ -15,16 +15,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const title = "Privacy · Vitor M. Rodovalho";
 const description =
-  "Plain-English notice for vitormr.dev — what this site collects, what it doesn't, and the third-party services that see your visit. No analytics, no forms, no cookies; only Cloudflare (hosting) and Google Fonts.";
+  "Plain-English notice for vitormr.dev — what this site collects, what it doesn't, and the third-party services that see your visit. Cloudflare Web Analytics for aggregate, cookieless counts; no other analytics; no forms; no cookies set by this site; Cloudflare hosts the site and Google serves the fonts.";
 
-const lastUpdated = "2026-05-12";
+const lastUpdated = "2026-05-19";
 
 const collection = [
   {
     num: "01",
     label: "Visitor analytics",
-    headline: "None.",
-    body: "This site runs no third-party analytics: no Google Analytics, no Plausible, no Cloudflare Web Analytics, no Mixpanel, no LinkedIn Insight tag, no Meta Pixel, no behavioral tracking SDK. There is no JavaScript on these pages that reports on what you do.",
+    headline: "Aggregate only.",
+    body: "This site uses Cloudflare Web Analytics — a cookieless, privacy-first service that runs on Cloudflare's own edge. No cookies are set. No persistent identifiers are stored. What is collected at the page-view level: the page URL (including any query string), the referrer URL (where the visit came from), the visitor's country (resolved from IP at the edge — the IP itself is not stored against the page-view event), and aggregate browser/device family. I see only aggregate dashboards — page-view counts, top URLs, top countries, top referrers, daily totals. I cannot reconstruct an individual visit or identify a visitor. No Google Analytics, no Plausible, no Mixpanel, no LinkedIn Insight tag, no Meta Pixel, no behavioral tracking SDK.",
   },
   {
     num: "02",
@@ -44,8 +44,8 @@ const thirdParty = [
   {
     num: "01",
     name: "Cloudflare",
-    kind: "Hosting + CDN",
-    body: "This site is served from Cloudflare's edge network as static assets. Cloudflare collects standard request data — IP address, user agent, request path, timestamp, country — for security, abuse mitigation, and operational telemetry. I see only the aggregate dashboards Cloudflare provides; I do not have access to per-visit logs.",
+    kind: "Hosting + CDN + Web Analytics",
+    body: "This site is served from Cloudflare's edge network as static assets. Cloudflare collects standard request data — IP address, user agent, request path, timestamp, country — for security, abuse mitigation, and operational telemetry. Cloudflare Web Analytics is enabled for this site as a cookieless beacon, automatically injected at the edge (no script in this codebase). It reports aggregate page views, top URLs, top countries, and top referrers, with no cookies and no per-visitor reconstruction. I see only the aggregate dashboards Cloudflare provides; I do not have access to per-visit logs.",
     linkLabel: "Cloudflare Privacy Policy",
     linkUrl: "https://www.cloudflare.com/privacypolicy/",
   },
@@ -97,9 +97,10 @@ const rights = [
         <p class="text-base text-muted-foreground leading-relaxed">
           Plain-English notice of what this site collects, what it doesn't,
           and which third-party services see your visit.
-          <strong class="text-foreground">Short version</strong>: no analytics,
-          no forms, no cookies — Cloudflare hosts the site and Google serves
-          the fonts, and that's it.
+          <strong class="text-foreground">Short version</strong>: Cloudflare
+          Web Analytics for cookieless aggregate counts, no other analytics,
+          no forms, no cookies set by this site — Cloudflare hosts the site
+          and Google serves the fonts.
         </p>
         <p class="build-stamp tnum">
           LAST&nbsp;UPDATED&nbsp;·&nbsp;{lastUpdated}

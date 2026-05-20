@@ -4,8 +4,8 @@
  *
  * Person markup includes occupation, affiliation (Linesight), co-founder
  * role at Núcleo IA & GP (with separate authorship of its platform and
- * management framework), and `sameAs` cross-links to LinkedIn + GitHub
- * for Knowledge Graph entity-resolution.
+ * management framework), and `sameAs` cross-links to LinkedIn, GitHub,
+ * and Credly (PMP credential) for Knowledge Graph entity-resolution.
  */
 
 import "../styles/global.css";
@@ -111,6 +111,7 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
         sameAs: [
           "https://www.linkedin.com/in/vitor-rodovalho-pmp",
           "https://github.com/VitorMRodovalho",
+          "https://www.credly.com/users/vitor-maia-rodovalho.edbf9ddd",
         ],
         jobTitle: "Senior Cost Manager",
         worksFor: {

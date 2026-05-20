@@ -16,7 +16,7 @@ If anything here conflicts with `CLAUDE.md`, follow `CLAUDE.md` — it's closer 
 
 Personal/professional site for **Vitor M. Rodovalho, PMP®** — Senior Cost Manager at Linesight + Founder of AI & PM Research Hub (Núcleo IA & GP) at PMI Brazil + open-source builder. Strategic frame per ADR-023 §D4.2 in `rodovalho-finance` parent repo: independently-citable surface that amplifies discoverability of his work + supports EB-2 NIW evidence narrative. Live at https://vitormr.dev/ behind Cloudflare.
 
-**Stack:** Astro 6.3 + Tailwind v4 + MDX + TypeScript 6 + Biome 2.4 + Cloudflare Workers Static Assets (`wrangler.toml` `[assets]` + `worker.js`). pnpm package manager (locked). No backend, no database, no analytics — static-only.
+**Stack:** Astro 6.3 + Tailwind v4 + MDX + TypeScript 6 + Biome 2.4 + Cloudflare Workers Static Assets (`wrangler.toml` `[assets]` + `worker.js`). pnpm package manager (locked). No backend, no database. Cloudflare Web Analytics (cookieless aggregate, edge-injected — no script in this codebase) is the only analytics surface; disclosed in `/privacy`.
 
 **Sibling sites:** stack symmetry with `sarah-rodovalho-site` (Sarah's site). This is one of 5 properties under the `vitormr.dev` umbrella — see `CLAUDE.md` for the full topology (orenu / panorama / meridianiq / nucleoia subdomains). Architectural conventions are coordinated across all of them.
 
