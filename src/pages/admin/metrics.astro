@@ -49,14 +49,11 @@ const description =
           <a href="/privacy" class="link-soft hover:text-foreground">
             privacy notice</a>. <strong>Scoped to apex
           <code>vitormr.dev</code></strong> — sibling subdomains
-          (nucleoia, orenu, meridianiq, panorama) are filtered out;
-          their per-host reach is visible on the{" "}
-          <a
-            href="https://dash.cloudflare.com/67d4c2262aebde75efb5fb6a1bb12cd2/web-analytics"
-            rel="noopener"
-            class="link-soft hover:text-foreground"
-          >Cloudflare dashboard</a>. UTM-tagged links surface as
-          distinct rows under Top pages (see{" "}
+          (nucleoia, orenu, meridianiq, panorama) are excluded from
+          every card above and aggregated separately in the
+          <em>Project reach</em> card at the bottom for umbrella
+          context. UTM-tagged links surface as distinct rows under Top
+          pages (see{" "}
           <a
             href="https://github.com/VitorMRodovalho/vitormr-site/blob/main/docs/site-reviews/utm-conventions.md"
             rel="noopener"
@@ -113,6 +110,14 @@ const description =
     visits: number;
   };
 
+  type ProjectReachItem = {
+    host: string;
+    isApex: boolean;
+    last30d: MetricsTotals;
+    prior30d: MetricsTotals;
+    delta30d: number | null;
+  };
+
   type MetricsPayload = {
     siteTag: string;
     launch: string;
@@ -130,6 +135,7 @@ const description =
     topPages: MetricsListItem[];
     topCountries: MetricsListItem[];
     topReferrers: MetricsListItem[];
+    projectReach: ProjectReachItem[];
   };
 
   async function init() {
@@ -184,6 +190,7 @@ const description =
       renderSparkline(d.daily),
       renderTripleGrid(d),
       renderProjectInterest(d),
+      renderProjectReach(d),
     ].join("");
   }
 
@@ -302,6 +309,58 @@ const description =
         </div>
         <ul class="space-y-2.5">${rows}</ul>
       </div>`;
+  }
+
+  function renderProjectReach(d: MetricsPayload): string {
+    // Umbrella context — apex + every sibling subdomain (nucleoia /
+    // orenu / meridianiq / panorama) with their own 30d totals + delta.
+    // Each row is a separate filtered GraphQL query (the dataset doesn't
+    // group by requestHost). Apex appears here too so the user can see
+    // what fraction of zone traffic is the personal site vs the apps.
+    if (!d.projectReach.length) return "";
+    const sorted = [...d.projectReach].sort(
+      (a, b) => b.last30d.visits - a.last30d.visits,
+    );
+    const rows = sorted
+      .map((p) => {
+        const labelClass = p.isApex
+          ? "text-foreground font-medium"
+          : "text-foreground/85";
+        const apexBadge = p.isApex
+          ? ' <span class="text-[0.6rem] uppercase tracking-[0.15em] text-primary">apex</span>'
+          : "";
+        const hasTraffic = p.last30d.visits > 0 || p.last30d.views > 0;
+        const valueText = hasTraffic
+          ? `${formatNumber(p.last30d.visits)} <span class="text-muted-foreground/70">/ ${formatNumber(p.last30d.views)}</span>`
+          : '<span class="text-muted-foreground/60">—</span>';
+        const delta = formatDelta(p.delta30d);
+        const deltaPart = delta
+          ? `<span class="build-stamp tnum ${delta.cls} shrink-0">${delta.text}</span>`
+          : '<span class="build-stamp tnum text-muted-foreground/40 shrink-0">—</span>';
+        return `
+          <li class="flex items-baseline justify-between gap-3 text-sm">
+            <span class="truncate ${labelClass}"><code>${escapeHtml(p.host)}</code>${apexBadge}</span>
+            <span class="flex items-baseline gap-4 shrink-0">
+              <span class="build-stamp tnum text-foreground/85">${valueText}</span>
+              ${deltaPart}
+            </span>
+          </li>`;
+      })
+      .join("");
+    return `
+      <section class="border border-border/60 rounded-md p-6 space-y-3">
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">Project reach · 30d</p>
+          <p class="build-stamp tnum text-muted-foreground/70">visits / views · Δ vs prior 30d</p>
+        </div>
+        <ul class="space-y-2.5">${rows}</ul>
+        <p class="text-xs text-muted-foreground/85 leading-relaxed pt-2">
+          Each row is filtered to its own host. The umbrella view spans
+          apex <code>vitormr.dev</code> plus every sibling project under
+          the same CF zone — useful to see which surface the audience is
+          actually hitting.
+        </p>
+      </section>`;
   }
 
   function renderProjectInterest(d: MetricsPayload): string {

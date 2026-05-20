@@ -86,12 +86,43 @@ function jsonResponse(body, status = 200, extraHeaders = {}) {
 // orenu, meridianiq, panorama) too. Apex-only metrics require an
 // explicit requestHost filter on every query.
 //
-// requestHost is valid as a filter input on rumPageloadEventsAdaptiveGroups
-// but NOT as a groupable dimension on this dataset (CF GraphQL returns
-// `unknown field "<alias>"` if you put it under `dimensions { }`).
-// Sibling-subdomain reach is available on the CF dashboard but cannot
-// be reproduced here via GraphQL — link out instead.
+// requestHost works as a filter input on rumPageloadEventsAdaptiveGroups
+// but NOT as a groupable dimension (CF GraphQL returns
+// `unknown field "<alias>"` if put under `dimensions { }`). So the
+// "Project reach" card below uses one query per sibling host instead
+// of a single group-by query.
 const APEX_HOST = "vitormr.dev";
+
+// Sibling subdomains under the vitormr.dev umbrella, aggregated in the
+// "Project reach" card. Add a host here when launching a new project
+// subdomain — the GraphQL fragments and transform handle it
+// generically. Each entry produces 2 aliases (last30d + prior30d) and
+// 1 projectReach row. Alias name = first label of the host
+// ("nucleoia.vitormr.dev" → "nucleoia").
+const SIBLING_HOSTS = [
+  "nucleoia.vitormr.dev",
+  "orenu.vitormr.dev",
+  "meridianiq.vitormr.dev",
+  "panorama.vitormr.dev",
+];
+
+function siblingAlias(host) {
+  return host.split(".")[0];
+}
+
+const SIBLING_FRAGMENTS = SIBLING_HOSTS.map((host) => {
+  const a = siblingAlias(host);
+  return `
+      ${a}30d: rumPageloadEventsAdaptiveGroups(
+        limit: 1
+        filter: { siteTag: $siteTag, requestHost: "${host}", datetime_geq: $minus30d, datetime_lt: $now }
+      ) { count sum { visits } }
+
+      ${a}Prior30d: rumPageloadEventsAdaptiveGroups(
+        limit: 1
+        filter: { siteTag: $siteTag, requestHost: "${host}", datetime_geq: $minus60d, datetime_lt: $minus30d }
+      ) { count sum { visits } }`;
+}).join("\n");
 
 const GRAPHQL_QUERY = `
 query SiteMetrics(
@@ -171,6 +202,9 @@ query SiteMetrics(
         sum { visits }
         dimensions { refererHost }
       }
+
+      # Per-subdomain reach (one alias pair per sibling host).
+${SIBLING_FRAGMENTS}
     }
   }
 }
@@ -254,6 +288,28 @@ function transformAnalytics(raw, env) {
       visits: row?.sum?.visits ?? 0,
     }));
 
+  const projectReach = [
+    {
+      host: APEX_HOST,
+      isApex: true,
+      last30d,
+      prior30d,
+      delta30d: percentDelta(last30d.visits, prior30d.visits),
+    },
+    ...SIBLING_HOSTS.map((host) => {
+      const a = siblingAlias(host);
+      const sibLast = totalsBlock(account[`${a}30d`]);
+      const sibPrior = totalsBlock(account[`${a}Prior30d`]);
+      return {
+        host,
+        isApex: false,
+        last30d: sibLast,
+        prior30d: sibPrior,
+        delta30d: percentDelta(sibLast.visits, sibPrior.visits),
+      };
+    }),
+  ];
+
   return {
     siteTag: env.CF_WEB_ANALYTICS_SITE_TAG,
     launch: env.CF_SITE_LAUNCH_DATE || "2026-03-19",
@@ -271,6 +327,7 @@ function transformAnalytics(raw, env) {
     topPages: groupedList(account.topPages, "requestPath"),
     topCountries: groupedList(account.topCountries, "countryName"),
     topReferrers: groupedList(account.topReferrers, "refererHost"),
+    projectReach,
   };
 }
 
