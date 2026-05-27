@@ -1,0 +1,117 @@
+---
+/**
+ * SiteHeader — sticky top navigation for sub-pages.
+ *
+ * The home page opts out via `noChrome` on BaseLayout because its hero
+ * already carries the same route list as part of the bio-sheet layout.
+ * Sub-pages otherwise only had the section nav in the footer, which
+ * forced visitors landing direct from search to scroll a full page to
+ * navigate — the journey break this component fixes.
+ *
+ * Visual language matches the rest of the site: mono-forward
+ * (JetBrains Mono), neutral foreground with the amber period accent on
+ * the brand mark, link-soft underlines on hover, no chrome shouting.
+ *
+ * Mobile: vanilla `<details>` hamburger — no framework hydration
+ * needed for a stacked sheet of anchor links.
+ *
+ * z-index 30 sits below the floating ThemeToggle (z-50) so the toggle
+ * keeps its top-right anchor without colliding with the header band.
+ */
+
+const { pathname } = Astro.url;
+const isActive = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+const NAV = [
+  { href: "/experience", label: "Experience" },
+  { href: "/projects", label: "Projects" },
+  { href: "/portfolio", label: "Portfolio" },
+  { href: "/writing", label: "Writing" },
+  { href: "/recognition", label: "Recognition" },
+  { href: "/about", label: "About" },
+] as const;
+---
+
+<header
+  class="sticky top-0 z-30 border-b border-border/60 backdrop-blur supports-[backdrop-filter]:bg-background/80 bg-background/95"
+>
+  <div class="max-w-3xl mx-auto px-6 sm:px-10 lg:px-16">
+    <div class="flex h-12 items-center justify-between gap-4">
+      <a
+        href="/"
+        class="font-display text-sm font-medium tracking-tight text-foreground hover:text-foreground"
+        aria-label="Vitor M. Rodovalho — home"
+      >
+        Vitor M. Rodovalho<span class="text-primary">.</span>
+      </a>
+
+      <nav
+        class="hidden md:flex items-center gap-x-5 lg:gap-x-6"
+        aria-label="Primary"
+      >
+        {
+          NAV.map((item) => (
+            <a
+              href={item.href}
+              class:list={[
+                "text-[13px] link-soft hover:text-foreground",
+                isActive(item.href)
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground",
+              ]}
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <details class="md:hidden relative">
+        <summary
+          class="list-none cursor-pointer text-muted-foreground hover:text-foreground p-1"
+          aria-label="Open menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </summary>
+        <nav
+          class="absolute right-0 top-full mt-2 w-52 rounded-md border border-border bg-background shadow-sm py-2"
+          aria-label="Mobile"
+        >
+          {
+            NAV.map((item) => (
+              <a
+                href={item.href}
+                class:list={[
+                  "block px-4 py-2 text-sm hover:bg-muted",
+                  isActive(item.href)
+                    ? "text-foreground font-medium"
+                    : "text-muted-foreground",
+                ]}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

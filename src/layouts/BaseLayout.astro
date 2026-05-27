@@ -9,6 +9,7 @@
  */
 
 import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import WatermarkLayer from "../components/WatermarkLayer.astro";
 
@@ -37,9 +38,17 @@ interface Props {
    * past the edge gate. Public pages omit this prop and stay indexable.
    */
   noIndex?: boolean;
+  /**
+   * Opt out of the shared `<SiteHeader>` chrome. Home (`/`) passes this
+   * because its hero already carries the same route nav inline as part
+   * of the bio-sheet composition; rendering the sticky header on top
+   * would duplicate the route list. Sub-pages omit it and inherit the
+   * sticky nav so direct entry from search has a top-of-page route out.
+   */
+  noChrome?: boolean;
 }
 
-const { title, description, watermark = "none", schemaJsonLd, noIndex = false } = Astro.props;
+const { title, description, watermark = "none", schemaJsonLd, noIndex = false, noChrome = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const extraSchemas: Record<string, unknown>[] = schemaJsonLd
   ? Array.isArray(schemaJsonLd)
@@ -206,6 +215,7 @@ const extraSchemas: Record<string, unknown>[] = schemaJsonLd
   <body class="min-h-screen flex flex-col">
     <WatermarkLayer variant={watermark} />
     <ThemeToggle />
+    {!noChrome && <SiteHeader />}
     <slot />
   </body>
 </html>
