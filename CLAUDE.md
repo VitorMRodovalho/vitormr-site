@@ -67,3 +67,11 @@ This site is one of 5 properties under `vitormr.dev` umbrella:
 - Per-project deep architecture pages (case-study one-pagers v1; deepen v2 if value justifies)
 - AI playground / live demos (Astro Islands cover; defer until specific demo concrete)
 - Sarah's site cross-ref attribution (separate PR-S08 in `sarah-rodovalho-site` repo, post-vitormr-launch)
+
+## Portfolio PMO (knowledge loop)
+
+- This repo lives under Vitor's portfolio PMO at `~/projects` (the parent
+  `CLAUDE.md` there governs PMO mode; machine-global skills at
+  `~/.claude/skills/`, SSOT = `AI-PMO-Framework/skills/`).
+- It carries a standing `[LL]` lessons-learned-intake issue; log reusable
+  lessons there so the PMO can harvest them (`pmo-sync.sh harvest`).
