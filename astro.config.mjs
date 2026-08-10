@@ -12,6 +12,10 @@ import { defineConfig } from "astro/config";
 // mode. Pattern validated on sarahrodovalho.com — same stack, same approach.
 
 export default defineConfig({
+  // Astro v7 mudou o padrao de compressHTML de true para 'jsx', o que colapsa
+  // whitespace entre elementos inline. Fixado em true para preservar a
+  // renderizacao da v6 — trocar a regra e decisao separada.
+  compressHTML: true,
   site: "https://vitormr.dev",
   output: "static",
   integrations: [
