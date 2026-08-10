@@ -16,7 +16,7 @@
 
 name = "vitormr-site"
 main = "./worker.js"
-compatibility_date = "2026-05-09"
+compatibility_date = "2026-08-01"
 workers_dev = false
 
 # Non-secret config consumed by worker.js for /admin/api/metrics.
