@@ -1,0 +1,56 @@
+# Auto-PRs semanais de dependências. Criado em 2026-08-10 (issue #46),
+# espelhando a configuração já em uso no `rodovalho-finance`.
+#
+# Racional: a ausência deste arquivo é a CAUSA-RAIZ da onda S1. Entre
+# 2026-06-10 e 2026-08-10 o repo ficou sem commit; nada propunha bumps e,
+# como a CI só roda em push, nenhum advisory novo apareceu. Acumularam-se
+# 18 vulnerabilidades high (10 em prod) sem ninguém ver. Um repo silencioso
+# não é um repo estável — o mesmo silêncio também desativou o workflow de
+# sync agendado (ver PR #45).
+#
+# MAJORS FICAM DE FORA. Major bump é lane própria, deliberada, com
+# changelog — hoje o caso aberto é `astro` 6 → 7. Se um fix de segurança
+# exigir major, o alerta do Dependabot continua visível e o gate
+# `pnpm audit --prod` acusa; trata-se manualmente.
+#
+# ⚠ ARMADILHA MEDIDA NA ONDA S1, e ela vale para qualquer override que um
+# PR do Dependabot venha a tocar: em `pnpm.overrides`, `>=X` NÃO trava o
+# major. `js-yaml: ">=4.3.1"` resolveu para **5.2.3** e quebrou o build
+# (`does not provide an export named 'default'`); `nanoid: ">=3.3.17"`
+# resolveu para **6.0.1**, três majors adiante. Usar SEMPRE caret (`^X`),
+# que expressa o mesmo piso de segurança sem atravessar major em silêncio.
+# Mesma família do incidente `brace-expansion@5` no `rodovalho-finance`.
+
+version: 2
+updates:
+  # JS/TS (site Astro, pnpm)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "chore(deps)"
+
+  # GitHub Actions (uses: pins nos workflows)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 2
+    groups:
+      actions-all:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(ci)"
