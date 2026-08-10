@@ -60,7 +60,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm audit --audit-level high
+      # --prod alinha com o gate do rodovalho-finance: CVE que so alcanca
+      # dependencia de desenvolvimento (ex.: o language server do `astro check`)
+      # nao chega ao Worker publicado. Ligado em 2026-08-10 DEPOIS de o prod
+      # estar limpo (issue #46), nunca antes — fazer o inverso maquiaria o gate
+      # em vez de corrigir o escopo dele.
+      - run: pnpm audit --audit-level high --prod
 
   pii:
     name: PII scan (full repo)
