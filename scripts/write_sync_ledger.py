@@ -51,7 +51,9 @@ from pathlib import Path
 # pattern tolerates a parenthetical before the colon.
 COMPARED_RE = re.compile(r"^\s*Matched pairs:\s+(\d+)\s*$", re.M)
 DIVERGENCE_RES = {
-    "updates": re.compile(r"^\s*Field updates planned:\s+(\d+)", re.M),
+    # "Field updates planned" (credentials) / "Citation updates planned"
+    # (publications) — same concept, different wording per script.
+    "updates": re.compile(r"^\s*(?:Field|Citation) updates planned:\s+(\d+)", re.M),
     "drift": re.compile(r"^\s*Drift warnings(?:\s*\([^)]*\))?:\s+(\d+)", re.M),
     "stubs": re.compile(r"^\s*Stubs needed:\s+(\d+)", re.M),
     "orphans": re.compile(r"^\s*Orphan MDX:\s+(\d+)", re.M),
@@ -97,9 +99,9 @@ def parse_phase(name: str, output: str, exit_code: int) -> Phase:
         if m:
             divergences[key] = int(m.group(1))
 
-    # `Field updates planned` only exists in the credentials script, so its
-    # absence is normal. The other three must all be present, or we did not
-    # read a real summary block.
+    # The "updates planned" line only exists in the credentials and
+    # publications scripts, so its absence is normal. The other three must all
+    # be present, or we did not read a real summary block.
     required = {"drift", "stubs", "orphans"}
     if not required.issubset(divergences):
         return Phase(name, compared, None, exit_code)

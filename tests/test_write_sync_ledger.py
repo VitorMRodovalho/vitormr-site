@@ -56,6 +56,29 @@ Summary:
   Note: Phase 3b is presence-aware ONLY — no fields auto-overwritten.
 """
 
+# As duas formas que só existem no sarah-rodovalho-site. O script é infra
+# compartilhada entre os dois sites e deve permanecer idêntico nos dois repos,
+# então as quatro formas reais são testadas aqui também.
+PUBLICATIONS_OUTPUT = """\
+  Matched pairs:     19
+
+Summary:
+  Citation updates planned: 0
+  Drift warnings (non-authoritative fields): 0
+  Stubs needed:  0
+  Orphan MDX:    0
+"""
+
+ENGAGEMENTS_OUTPUT = """\
+  Matched pairs:     6
+
+Summary:
+  Drift warnings (date misalignment > 30 days): 1
+  Stubs needed:  0
+  Orphan MDX:    0
+  Note: Phase 1b is presence-aware ONLY — no fields auto-overwritten.
+"""
+
 LEDGER_SEED = """\
 # Registro
 
@@ -66,16 +89,34 @@ LEDGER_SEED = """\
 """
 
 
-def test_parses_the_three_real_summary_shapes():
-    """Each script words its summary differently; all three must parse."""
+def test_parses_every_real_summary_shape_across_both_sites():
+    """Each script words its summary differently; all five must parse.
+
+    "Field updates planned" vs "Citation updates planned", and four different
+    parentheticals after "Drift warnings". A wording drift here would silently
+    downgrade a clean run to INDETERMINADO — loud, but still wrong.
+    """
     for name, output, compared in [
         ("credentials", CREDENTIALS_OUTPUT, 12),
         ("awards", AWARDS_OUTPUT, 8),
         ("community", COMMUNITY_OUTPUT, 5),
+        ("publications", PUBLICATIONS_OUTPUT, 19),
+        ("engagements", ENGAGEMENTS_OUTPUT, 6),
     ]:
         phase = wsl.parse_phase(name, output, 0)
         assert phase.parsed, f"{name} should parse"
         assert phase.compared == compared
+
+
+def test_citation_updates_are_counted_as_divergence():
+    """The publications script says 'Citation updates planned', not 'Field'."""
+    out = PUBLICATIONS_OUTPUT.replace(
+        "Citation updates planned: 0", "Citation updates planned: 3"
+    )
+    phase = wsl.parse_phase("publications", out, 0)
+    assert phase.parsed
+    assert phase.divergences["updates"] == 3
+    assert "⚠️" in wsl.render_row([phase], "2026-08-10", None)
 
 
 def test_clean_run_reports_zero_and_totals():
