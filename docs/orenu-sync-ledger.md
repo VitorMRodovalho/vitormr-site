@@ -1,6 +1,6 @@
 # Registro de verificação — Orenu → site
 
-**Última verificação:** 2026-08-24
+**Última verificação:** 2026-08-25
 
 Cada linha abaixo é uma execução do sync Orenu → site. É gerada por
 `scripts/write_sync_ledger.py`, a partir do relatório dos próprios scripts de
@@ -53,6 +53,7 @@ colapsar os dois.
 
 | Data (UTC) | Fontes conferidas | Divergências | Resultado | Execução |
 |---|---|---|---|---|
+| 2026-08-25 | **11** (credentials 3 · awards 3 · community 5) | **0** | ✅ sem divergência | [log](https://github.com/VitorMRodovalho/vitormr-site/actions/runs/32815671202) |
 | 2026-08-24 | **11** (credentials 3 · awards 3 · community 5) | **0** | ✅ sem divergência | [log](https://github.com/VitorMRodovalho/vitormr-site/actions/runs/32696364409) |
 | 2026-08-23 | **11** (credentials 3 · awards 3 · community 5) | **0** | ✅ sem divergência | [log](https://github.com/VitorMRodovalho/vitormr-site/actions/runs/32622119099) |
 | 2026-08-22 | **11** (credentials 3 · awards 3 · community 5) | **0** | ✅ sem divergência | [log](https://github.com/VitorMRodovalho/vitormr-site/actions/runs/32556089373) |
