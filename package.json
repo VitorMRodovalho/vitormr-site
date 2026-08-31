@@ -19,20 +19,20 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/mdx": "^7.0.8",
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.2.0",
-    "sharp": "^0.35.3",
+    "astro": "^7.2.9",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@biomejs/biome": "^2.5.7",
+    "@biomejs/biome": "^2.5.11",
     "@types/node": "^25.9.5",
     "husky": "^9.1.7",
     "typescript": "^6.0.3",
-    "wrangler": "^4.120.0"
+    "wrangler": "^4.127.0"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
@@ -41,7 +41,7 @@
       "js-yaml": "^4.3.1",
       "nanoid": "^3.3.17",
       "postcss": "^8.5.18",
-      "sharp": "^0.35.3",
+      "sharp": "^0.35.4",
       "svgo": "^4.0.2"
     }
   }
